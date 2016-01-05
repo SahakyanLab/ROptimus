@@ -65,8 +65,8 @@
 #-- MODEL.PATH      # Path to the required R file that holds the model details.
 #*******************************************************************************
 ################################################################################
-Optimus <- function(NUMITER       = 1000000,
-                    CYCLES        = 10,
+Optimus <- function(NUMITER       = 400000,
+                    CYCLES        = 4,
                     ACCRATIO.IN   = 90,
                     ACCRATIO.FIN  = 0.5,
                     STATWINDOW    = 70,
@@ -75,7 +75,7 @@ Optimus <- function(NUMITER       = 1000000,
                     TSCLnum       = 2,
                     T.SCALING     = 3,
                     T.MIN         = 0.000000005,
-                    DUMP.FREQ     = 10000,
+                    DUMP.FREQ     = 100000,
                     LIVEPLOT      = TRUE,
                     LIVEPLOT.FREQ = 100000,
                     PDFheight     = 29,
@@ -83,8 +83,8 @@ Optimus <- function(NUMITER       = 1000000,
                     NCPU          = 4,  
                     LONG          = TRUE,
                     SEED          = 840,
-                    OPTNAME       = "poly",
-                    MODEL.PATH    = "OptMDL_1.R"
+                    OPTNAME       = "eq",
+                    MODEL.PATH    = "OptMDL_2.R"
                    ){
 ################################################################################
 
