@@ -63,31 +63,28 @@
 #    the solution performance with $Q /quality score, such as RMSE etc,/ and $E
 #    /pseudo-energy/ components).
 #-- MODEL.PATH      # Path to the required R file that holds the model details.
-#-- MDLCALL.PATH    # Path to the required R file that specifies how the mdl
-#                     object should be created from within the mcara function.
 #*******************************************************************************
 ################################################################################
-Optimus <- function(NUMITER       = 6000,
-                    CYCLES        = 2,
-                    ACCRATIO.IN   = 85,
-                    ACCRATIO.FIN  = 5,
+Optimus <- function(NUMITER       = 1000000,
+                    CYCLES        = 10,
+                    ACCRATIO.IN   = 90,
+                    ACCRATIO.FIN  = 0.5,
                     STATWINDOW    = 70,
                     T.INI         = 0.00001,
-                    T.ADJSTEP     = 0.000005,
-                    TSCLnum       = 3,
-                    T.SCALING     = 3.5,
-                    T.MIN         = 0.0000005,
-                    DUMP.FREQ     = 10,
+                    T.ADJSTEP     = 0.000000005,
+                    TSCLnum       = 2,
+                    T.SCALING     = 3,
+                    T.MIN         = 0.000000005,
+                    DUMP.FREQ     = 10000,
                     LIVEPLOT      = TRUE,
-                    LIVEPLOT.FREQ = 10,
+                    LIVEPLOT.FREQ = 100000,
                     PDFheight     = 29,
                     PDFwidth      = 20,
-                    NCPU          = 3,  
-                    LONG          = FALSE,
-                    SEED          = 845,
-                    OPTNAME       = "name",
-                    MODEL.PATH    = "model.R",
-                    MDLCALL.PATH  = "mdlcall.R"
+                    NCPU          = 4,  
+                    LONG          = TRUE,
+                    SEED          = 840,
+                    OPTNAME       = "poly",
+                    MODEL.PATH    = "OptMDL_1.R"
                    ){
 ################################################################################
 
@@ -156,14 +153,14 @@ Optimus <- function(NUMITER       = 6000,
  #-- PARALLEL PROCESSING WRAP # # # # # # # # #
  foreach(repl=1:NCPU, .inorder=FALSE) %op% {
  
+  set.seed(seeds[repl])
+  if(NCPU==1){ repl <- NULL }
+  
   ###***************
   ### MODEL ########
   source(MODEL.PATH)
   ##^ MODEL ########
   ###***************
-
-  set.seed(seeds[repl])
-  if(NCPU==1){ repl <- NULL }
   
   #-- STARTING MC ITERATIONS # # # # # # # # # # # # # # # # # # # # # # # # # #
   for(STEP in 1:NUMITER){  #-- step of the trial, from 1 to NUMITER
@@ -175,8 +172,8 @@ Optimus <- function(NUMITER       = 6000,
     ###***************
     ### MODEL ########
     K.new <- r(K=K)
-    V     <- m(K=K.new)
-    snp   <- u(V=V)
+    O     <- m(K=K.new)
+    snp   <- u(O=O)
     ##^ MODEL ########
     ###***************    
   
@@ -199,21 +196,22 @@ Optimus <- function(NUMITER       = 6000,
         E.stored       <- E.old
         Step.stored    <- STEP
         K.stored       <- K
+        O.stored       <- O
         DUMP.MODEL     <- NULL
         DUMP.MODEL[1]  <- "QUALITY:"
         DUMP.MODEL[2]  <- paste("E: ",round(E.old,3),sep="")
         DUMP.MODEL[3]  <- paste("Q: ",round(Q.old,3),sep="")
-        DUMP.MODEL[4]  <- "TERMS:"
-        DUMP.MODEL[5]  <- paste(as.character(names(K)), collapse=" ")
-        DUMP.MODEL[6]  <- "COEFFICIENTS:"
-        DUMP.MODEL[7]  <- paste(format(as.vector(K), scientific=F, trim=T), collapse=" ")
-        DUMP.MODEL[8]  <- "OBSERVABLES:"
-        DUMP.MODEL[9]  <- paste(as.character(names(V)), collapse=" ")
-        DUMP.MODEL[10] <- "PREDICTIONS:"
-        DUMP.MODEL[11] <- paste(format(as.vector(V), scientific=F, trim=T), collapse=" ")
-        DUMP.MODEL[12] <- "TARGET:"
-        DUMP.MODEL[13] <- paste(format(as.vector(target), scientific=F, trim=T), collapse=" ")
-        DUMP.MODEL[14] <- "################################"
+#        DUMP.MODEL[4]  <- "TERMS:"
+#        DUMP.MODEL[5]  <- paste(as.character(names(K.stored)), collapse=" ")
+#        DUMP.MODEL[6]  <- "COEFFICIENTS:"
+#        DUMP.MODEL[7]  <- paste(format(as.vector(K.stored), scientific=F, trim=T), collapse=" ")
+#        DUMP.MODEL[8]  <- "OBSERVABLES:"
+#        DUMP.MODEL[9]  <- paste(as.character(names(O.stored)), collapse=" ")
+#        DUMP.MODEL[10] <- "PREDICTIONS:"
+#        DUMP.MODEL[11] <- paste(format(as.vector(O.stored), scientific=F, trim=T), collapse=" ")
+#        DUMP.MODEL[12] <- "TARGET:"
+#        DUMP.MODEL[13] <- paste(format(as.vector(y), scientific=F, trim=T), collapse=" ")
+#        DUMP.MODEL[14] <- "################################"
       }
       #-- # # # # # # # # #
 
@@ -315,7 +313,9 @@ Optimus <- function(NUMITER       = 6000,
 
 
     if( STEP%%DUMP.FREQ == 0 & exists("DUMP.MODEL") ){
-      write(DUMP.MODEL, file=paste(OPTNAME,repl,"_model.log",sep=""))
+      write(DUMP.MODEL, file=paste(OPTNAME,repl,"_model_QE.log",sep=""))
+      save(K.stored,    file=paste(OPTNAME,repl,"_model_K.Rdata",sep=""))
+      save(O.stored,    file=paste(OPTNAME,repl,"_model_O.Rdata",sep=""))
     }
 
     STEP.add <- STEP.add + 1    ########
@@ -343,6 +343,7 @@ Optimus <- function(NUMITER       = 6000,
   #-- if LONG==TRUE, OUTPUT will only hold the trimmed data!
   OUTPUT                       <- NULL
   OUTPUT$K.stored              <- K.stored
+  OUTPUT$O.stored              <- O.stored
   OUTPUT$STEP                  <- STEP
   OUTPUT$PROB.VEC              <- PROB.VEC
   OUTPUT$T.DE.FACTO            <- T.DE.FACTO
@@ -354,7 +355,7 @@ Optimus <- function(NUMITER       = 6000,
   OUTPUT$ACCEPTANCE            <- ACCEPTANCE
   OUTPUT$STEP.STORED           <- STEP.STORED
 
-  save(OUTPUT, file=paste(OPTNAME,repl,"_data.Rdata", sep=""))
+  save(OUTPUT, file=paste(OPTNAME,repl,"_model_ALL.Rdata", sep=""))
  
  }
  #^^ PARALLEL PROCESSING WRAP # # # # # # # # #
