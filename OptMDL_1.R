@@ -83,7 +83,7 @@ r <- function(K){
   if(K.new[K.ind.toalter]==1){
     K.new[K.ind.toalter] <- 0
   } else {
-    K.new[K.ind.toalter] <- 0
+    K.new[K.ind.toalter] <- 1
   }
   return(K.new)
 }
