@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright (C) 2015+ Aleksandr B. Sahakyan (aleksahak[at]cantab.net).         #
+# Copyright (C) 2015+ Sahakyan Laboratory (aleksahak[at]cantab.net).           #
 #                                                                              #
 # License: You may redistribute this source code (or its components) and/or    #
 #   modify/translate it under the terms of the GNU General Public License      #
@@ -53,7 +53,7 @@
 #-- SEED            # Setting the seed for the random number generator.
 #-- OPTNAME         # The name of the optimisation process.
 #*******************************************************************************
-#--  mcara() embeds a model to its core via 2 interfacing lines: a) by sourcing
+#--  Optimus() embeds a model to its core via 2 interfacing lines: a) by sourcing
 #    MODEL.PATH (local=FALSE) R file at the initialisation part of mcara(), and
 #    b) by sourcing (local=TRUE) the MDLCALL.PATH R file from inside the optimi-
 #    sation loop, where the MDLCALL.PATH file is supposed to use the definitions
