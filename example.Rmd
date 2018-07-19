@@ -1,7 +1,7 @@
 ---
 title: "Optimus Tutorial"
-author: "Aleksandr B. Sahakyan"
-date: "19 December 2015"
+author: "Nicholas Johnson and Aleksandr B. Sahakyan"
+date: "19 July 2018"
 output:
   pdf_document: default
   html_document:
