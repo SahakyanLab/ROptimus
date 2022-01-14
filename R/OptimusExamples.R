@@ -1,15 +1,19 @@
 #' @export
 
-OptimusExamples <- function(example=1,dir='.',file_name='example.R',method='SA',mopac="~/Downloads/MOPAC2016_for_Macintosh/MOPAC2016.exe",run=FALSE){
+OptimusExamples <- function(example=1, method="SA",
+                            file_name="example.R", dir=".",
+                      mopac="~/Downloads/MOPAC2016_for_Macintosh/MOPAC2016.exe",
+                            run=FALSE){
   setwd(dir)
   dir.create(paste0('example_',example))
   setwd(paste0(dir,'/example_',example))
   getwd()
-  if (example==1) {
-    text = 'library(Optimus)
+  if(example==1){
+    text =
+'library(Optimus)
 set.seed(845)
 x <- runif(1000, min=-15, max=10)
-y <- -1.0*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x),mean=0,sd=30)
+y <- -1.0*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x), mean=0, sd=30)
 
 DATA   <- NULL
 DATA$x <- x
@@ -20,7 +24,7 @@ K <- c(k1=1.0, k2=1.0, k3=1.0, k4=1.0)
 ################################################################################
 
 ################################################################################
-m <- function(K,DATA){
+m <- function(K, DATA){
   x <- DATA$x
   O <- K["k1"]*x + K["k2"]*x^2 + K["k3"]*x^3 + K["k4"]*x^4
   return(O)
@@ -28,13 +32,13 @@ m <- function(K,DATA){
 ################################################################################
 
 ################################################################################
-u <- function(O,DATA){
+u <- function(O, DATA){
   y <- DATA$y
   Q <- sqrt(mean((O-y)^2))
   E <- Q # For RMSD, <-> negative sign or other mathematical operation
-  # is not needed.
+         # is not needed.
   
-  RESULT <- NULL
+  RESULT   <- NULL
   RESULT$Q <- Q
   RESULT$E <- E
   return(RESULT)
@@ -44,36 +48,38 @@ u <- function(O,DATA){
 ################################################################################
 r <- function(K){
   K.new <- K
+  move.step <- 0.0005
+  
   # Randomly selecting a coefficient to alter:
   K.ind.toalter <- sample(size=1, x=1:length(K.new))
+  
   # Creating a potentially new set of coefficients where one entry is altered
   # by either +move.step or -move.step, also randomly selected:
-  move.step <- 0.0005
   K.new[K.ind.toalter] <- K.new[K.ind.toalter] + sample(size=1, x=c(-move.step, move.step))
-  
-  ## Setting the negative coefficients to 0 (not necessary in this example,
-  ## useful for optimising rate constants):
-  #neg.ind <- which(K.new < 0)
-  #if(length(neg.ind)>0){ K.new[neg.ind] <- 0 }
   
   return(K.new)
 }
 ################################################################################
     '
-    if (method=='SA') {
+    if(method=='SA'){
       call = 
-        'Optimus(NCPU = 4, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, OPT.TYPE = "SA", DATA = DATA, OPTNAME = "poly_4_SA", LONG = FALSE)'
-    } else if (method=='RE') {
+'Optimus(NCPU=4, OPTNAME="poly_4_SA", LONG=FALSE,
+        OPT.TYPE="SA",
+        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
+    } else if(method=='RE'){
       call = 
-        'Optimus(NCPU = 12, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, ACCRATIO = c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2), OPT.TYPE = "RE", DATA = DATA, OPTNAME = "poly_12_RE", LONG = FALSE)'
+'Optimus(NCPU=12, OPTNAME="poly_12_RE", LONG=FALSE
+        OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
+        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
     
     
-  } else if (example==2) {
-    text <- 'library(Optimus)
+  } else if(example==2){
+    text <-
+'library(Optimus)
 set.seed(845)
-x <- runif(1000, min = -15, max = 10)
-y <- -1 * x - 0.3 * x^2 + 0.2 * x^3 + 0.01 * x^4 + rnorm(length(x), mean = 0, sd = 30)
+x <- runif(1000, min=-15, max=10)
+y <- -1*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x), mean=0, sd=30)
 DATA <- NULL
 DATA$x <- x
 DATA$y <- y
@@ -190,17 +196,22 @@ r <- function(K){
 }
 ################################################################################
 '
-    if (method=='SA') {
+    if(method=='SA'){
       call <- 
-        'Optimus(NCPU = 4, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, OPT.TYPE = "SA", DATA = DATA, OPTNAME = "term_4_SA", NUMITER = 200000, CYCLES = 2, DUMP.FREQ = 100000, LONG = FALSE)'
-    } else if (method=='RE') {
+'Optimus(NCPU=4, OPTNAME="term_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
+        OPT.TYPE="SA",
+        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
+    } else if(method=='RE'){
       call <-
-        'Optimus(NCPU = 12, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, ACCRATIO = c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2), OPT.TYPE = "RE", DATA = DATA, OPTNAME = "term_12_RE", NUMITER = 200000, STATWINDOW = 50, DUMP.FREQ = 100000, LONG = FALSE)'
+'Optimus(NCPU=12, OPTNAME="term_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
+        OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
+        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
     
     
   } else if (example==3) {
-    text <- paste0('library(Optimus)
+    text <- paste0(
+'library(Optimus)
 set.seed(845)
 ################################################################################
 K <- c(PHI=90, PSI=90)
@@ -534,12 +545,12 @@ end.time-start.time
 
 # rm(list=ls())
 '
-    if (method=='SA') {
+    if(method=='SA'){
       call <- 
-        ' Optimus(NCPU = 4, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, OPT.TYPE = "SA",OPTNAME = "IJ.NEW.OPTI.SA", DATA = DATA, NUMITER = 2e+05, CYCLES = 2, DUMP.FREQ = 1e+0,LONG = FALSE)'
-    } else if (method=='RE') {
+'Optimus(NCPU = 4, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, OPT.TYPE = "SA",OPTNAME = "IJ.NEW.OPTI.SA", DATA = DATA, NUMITER = 2e+05, CYCLES = 2, DUMP.FREQ = 1e+0,LONG = FALSE)'
+    } else if(method=='RE') {
       call <- 
-        'Optimus(NCPU = 12, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, ACCRATIO = ACCRATIO, OPT.TYPE = "RE", DATA = DATA, OPTNAME = "IJ.NEW.OPTI.RE", NUMITER = 2e+05, STATWINDOW = 50, DUMP.FREQ = 1e+05, LONG = FALSE)'
+'Optimus(NCPU = 12, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, ACCRATIO = ACCRATIO, OPT.TYPE = "RE", DATA = DATA, OPTNAME = "IJ.NEW.OPTI.RE", NUMITER = 2e+05, STATWINDOW = 50, DUMP.FREQ = 1e+05, LONG = FALSE)'
     }
   }
   fileConn<-file(file_name)

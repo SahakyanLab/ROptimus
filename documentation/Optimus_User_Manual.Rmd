@@ -184,9 +184,9 @@ references:
 
 ## Motivation
 
-For a complex model, where the unknown parameters cannot be determined by conventional linear or non-linear fitting techniques, methods for optimisation, based on the biased random sampling of the parameter space, are the methods of choice [@Cowles1996]. In such cases, the quality of the solution found, following some optimisation protocol, depends on that protocol's ability to effectively explore the parameter space [@MCMC] and be drawn to more favourable areas in that space. Many existing methods perform well for certain modelling scenarios, but fail in others due, in part, to an inefficient exploration of the parameter space and easy trapping into local minima with regard to the metrics for the quality of the found solutions. In this manual, we present Optimus, a universal Monte Carlo optimisation engine in R with acceptance ratio annealing, replica exchange and adaptive thermoregulation. It can universally interface with any modelling initiative through its interfacing functions, and optimise the model parameters by effectively exploring the parameter space. Depending on the desires of the user, Optimus can execute either an annealing or a replica exchange procedure, however, both driven by acceptance ratio adjustment, rather than pseudo-temperature, for the acceptance or rejection of moves.
+For a complex model, where the unknown parameters cannot be determined by conventional linear or non-linear fitting techniques, methods for optimisation based on biased random sampling of the parameter space, are the methods of choice [@Cowles1996]. In such cases, the quality of the solution found, following some optimisation protocol, depends on that protocol's ability to effectively explore the parameter space [@MCMC] and be drawn to more favourable areas therein. Many existing methods perform well for certain modelling scenarios, but fail in others due, in part, to an inefficient exploration of the parameter space and easy trapping into local minima with regard to the metrics for the quality of the found solutions. In this manual, we present Optimus, a universal Monte Carlo optimisation engine in R with acceptance ratio annealing, replica exchange and adaptive thermoregulation. It can universally interface with any modelling initiative through its interfacing functions, and optimise the model parameters by effectively exploring the parameter space. Controlled by a user, Optimus can execute either an annealing or a replica exchange procedure, however, both driven by acceptance ratio adjustment, rather than by altering pseudo temperature.
 
-This manual will begin with a basic overview of Monte Carlo optimisation and the common temperature-based simulated annealing framework. It will then proceed with a presentation of the acceptance ratio annealing procedure of Optimus, its adaptive thermoregulation feature, and its replica exchange procedure. After an explanation of how to download the Optimus R package from GitHub and install it locally, five stand-alone tutorials will be presented to illustrate how users should employ Optimus and to demonstrate its flexibility as an optimisation engine across a wide variety of optimisation scenarios. Finally, an "Advanced User Manual" section is included, in which all possible input parameters to Optimus are outlined and the output formats are detailed.
+This manual will begin with a basic overview of Monte Carlo optimisation and the common temperature-based simulated annealing framework. It will then proceed with a presentation of the acceptance ratio annealing procedure of Optimus, its adaptive thermoregulation feature, and its replica exchange procedure. After an explanation of how to download the Optimus R package from GitHub and install it locally, five stand-alone tutorials will be presented to illustrate how users should employ Optimus and to demonstrate its flexibility as an optimisation engine across a wide variety of optimisation scenarios. Finally, an "Advanced User Manual" section is included, in which all possible and tested input parameters to Optimus are outlined and the output formats are detailed.
 
 ## Briefly on Monte Carlo and Temperature-Driven Simulated Annealing Procedure
 
@@ -199,7 +199,7 @@ $$
 E_2 = e \circ u \circ m \circ r(\textbf{K})
 $$
 
-We then accept or reject the move, meaning we accept the new set of $r(\textbf{K})$ coefficients as the new $\textbf{K}$ or revert back to the previous $\textbf{K}$, guided by the following acceptance probability, as postulated in a Metropolis criterion [@Chib1995], [@Chen2015]:
+We then accept or reject the alteration move, meaning we accept the new set of $r(\textbf{K})$ coefficients as the new $\textbf{K}$ or revert back to the previous $\textbf{K}$, guided by the following acceptance probability, as postulated in a Metropolis criterion [@Chib1995], [@Chen2015]:
 
 $$
 p_{accept} = min(1, e^{-\frac{{\Delta}E}{T}})
@@ -208,22 +208,22 @@ $$
 {\Delta}E = E_2 - E_1
 $$
 
-where T is the pseudo temperature, that should be always greater than 0. For a given ${\Delta}E > 0$ energy difference, one would have different stringency for accepting the move, depending on the value of the pseudo temperature T. Therefore, in case the Monte Carlo simulation was to drive the $\textbf{K}$ set to a state where any further move would increase the pseudo energy great enough for the moves to be almost always rejected, then one could overcome that and further sample the other values in the parameter space by increasing the value of the pseudo temperature.
+where T is the pseudo temperature, that should be always greater than 0. For a given ${\Delta}E > 0$ energy difference, one would have a certain stringency for accepting the alteration move, depending on the value of the pseudo temperature $T$. Therefore, if the Monte Carlo simulation was to modify the $\textbf{K}$ set to a state where any further move would increase the pseudo energy at a great enough amount for the moves to be almost always rejected, then one could overcome that state and further sample the other values in the parameter space by increasing the value of the pseudo temperature.
 
-To this end, one way to overcome the barriers is by using the technique known as simulated annealing, where we anneal the temperature gradually from some higher value to a lower value during the course of the simulation [@Kirkpatrick1983]. The parts of the simulation where the pseudo temperature is higher, allows relatively unconstrained exploration of the parameter search space, whereas those parts with a lower pseudo temperature limit the search to a more local area of the energy landscape and associated parameter space. Multiple cycles of this annealing procedure can thus be executed to increase the overall sampling.
+To this end, one way to overcome the barriers is by using the technique known as simulated annealing, where we gradually anneal the temperature from a higher value to lower during the course of the simulation [@Kirkpatrick1983]. The parts of the simulation where the pseudo temperature is higher, allows relatively unconstrained exploration of the parameter search space, whereas those parts with a lower pseudo temperature limit the search to a more local area of the energy landscape and associated parameter space. Multiple cycles of this annealing procedure can thus be executed to increase the overall sampling.
 
 ## Acceptance Ratio Annealing Procedure
 
-A significant limitation of pseudo-temperature-based simulated annealing, while used only in an optimisation objectives, is that a given scheme of temperature annealing might be efficient for some models or pseudo-energy metrics, but not efficient for others [@Ingber1993]. A temperature for a given system at a given point of the annealing cycle that is designated to be quite permissive in terms of accepting the moves, can actually not be permissive for some other models or systems simulated. This depends on the value and scale of the ${\Delta}E$ energy difference, as can be seen in the equation for $p_{accept}$, and can be affected by any of the $e()$, $u()$, $m()$ components and the system configuration $\textbf{K}$. This necessitates a pre-adjustment of the pseudo-temperature values from one modelling objective to another. Furthermore, even within a single model optimisation procedure on a defined system, the pseudo-energy metric can shift into a scale (due to a significant alteration/shift in the system as per the alteration rule $r()$) that does not match with the selected temperature scheme anymore, leading to a poor sampling of the parameter space when optimisation is at stake within restricted time and computational capacity. This can often be the case when the pseudo energy of the system does not exhibit a smooth dependency on $\textbf{K}$, loosely meaning that similar values of $\textbf{K}$ do not necessarily produce similar pseudo-energy values.
+A significant limitation of the pseudo-temperature-based simulated annealing, while used only in an optimisation objectives, is that a given scheme of temperature annealing might be efficient for some models or pseudo-energy metrics, but not efficient for others [@Ingber1993]. A temperature for a given system at a given point of the annealing cycle that is designated to be quite permissive in terms of accepting the moves, can actually not be permissive for some other models or systems simulated. This depends on the value and scale of the ${\Delta}E$ energy difference, as can be seen in the equation for $p_{accept}$, and can be affected by any of the $e()$, $u()$, $m()$ components, and the system configuration $\textbf{K}$. This necessitates a pre-adjustment of the pseudo-temperature values from one modelling objective to another. Furthermore, even within a single model optimisation procedure on a defined system, the pseudo-energy metric can shift into a scale (due to a significant alteration/shift in the system as per the alteration rule $r()$) that does not match with the selected temperature scheme anymore, leading to a poor sampling of the parameter space when optimisation is at stake within restricted time and computational capacity. This can often be the case when the pseudo energy of the system does not exhibit a smooth dependency on $\textbf{K}$, loosely meaning that close states of $\textbf{K}$ do not necessarily produce close pseudo-energy values (for instance, due to an alteration rule that randomly expands or trims the system, such as when equation terms are randomly turned on or off).
 
 To this end, in general cases where
 
-A) we do not deal with energies and temperatures that display the smoothness or roughness emulating real physical systems, such as while simulating molecular systems through Monte Carlo simulations;
-B) we are only interested in final optimised configuration of $\textbf{K}$, and do not need to characterise the statistical populance of the ensemble of reachable states/solutions,
+A) we do not deal with energies and temperatures that display the smoothness or roughness emulating real physical systems, such as while simulating molecular systems;
+B) we are only interested in final optimised configuration of $\textbf{K}$, and do not need to characterise the statistical populance as an ensemble of reachable states/solutions,
 
-we can anneal a metric for crossing different barriers that is more transferable to different systems and system configurations. As such a metric, Optimus, when in its default mode, uses the acceptance ratio, expressed as a fraction of accepted moves within certain number of past steps (STATWINDOW).
+we can anneal a metric for crossing different barriers that is more transferable to different systems and system configurations. As such a metric, Optimus uses the acceptance ratio, expressed as a fraction of accepted moves within certain number of past steps (STATWINDOW).
 
-In a given annealing cycle, Optimus constructs a linear target acceptance ratio schedule for each step based on an initial target acceptance ratio, a final acceptance ratio and the number of iterations in each cycle for a given optimisation run (all of which can be specified as inputs). Once the optimisation process begins, Optimus calculates an observed acceptance ratio at the end of each STATWINDOW (a fixed number of steps which can be specified by the user) by calculating the fraction of the accepted moves from all the past trials in the current STATWINDOW. Thereafter, Optimus compares the observed acceptance ratio with the target acceptance ratio based on the annealing schedule and determines whether and how to alter the system pseudo-temperature (adaptive thermoregulation) to align the observed acceptance ratio with the target ratio at the end of the following STATWINDOW. Thus, by employing acceptance ratio annealing and adaptive thermoregulation, Optimus is able to methodically explore the parameter space for $\textbf{K}$ even when no smooth relationship exists between $\textbf{K}$ and the system pseudo-energy.
+In a given annealing cycle, Optimus constructs a linear target acceptance ratio regiment for each step. This is done based on an initial target acceptance ratio, a final acceptance ratio, and the number of iterations in each cycle for a given optimisation run (all of which can be specified as inputs). Once the optimisation process begins, Optimus calculates an observed acceptance ratio at the end of each STATWINDOW (a fixed number of steps which can be specified by the user) by calculating the fraction of the accepted moves from all the past trials in the current STATWINDOW. Thereafter, Optimus compares the observed acceptance ratio with the pre-defined target acceptance ratio based on the annealing schedule and determines whether and how to alter the system pseudo-temperature (adaptive thermoregulation) to align the observed acceptance ratio with the target ratio at the end of the following STATWINDOW. Thus, by employing acceptance ratio annealing and adaptive thermoregulation, Optimus is able to methodically explore the parameter space for $\textbf{K}$ even when no smooth relationship exists between $\textbf{K}$ and the system pseudo energy.
 
 ## Adaptive Thermoregulation
 
@@ -231,24 +231,32 @@ All decisions governing the adaptive pseudo-temperature alterations on the syste
 
 The initial system temperature is specified as an input argument. At the end of each STATWINDOW, if the observed acceptance ratio is within a fixed range T.DELTA (specified as an input argument) of the target acceptance ratio based on the annealing schedule, the TCU will make no change to the current system pseudo temperature. If the observed acceptance ratio is less than the ideal ratio and outside the range of T.DELTA, the TCU will increase the system pseudo temperature by a value T.ADJSTEP (the initial value of T.ADJSTEP is specified as an input argument). Similarly, if the observed acceptance ratio is greater than the ideal ratio and outside the range of T.DELTA, the TCU will reduce the temperature by a value T.ADJSTEP.
 
-If the observed acceptance ratio keeps being below the ideal acceptance ratio for TSCLnum (an integer input argument) number of subsequent STATWINDOWs, T.ADJSTEP will be increased by a factor T.SCALING (an input argument). Similarly, T.ADJSTEP will also be decreased by a factor T.SCALING if the observed acceptance ratio is greater than the ideal acceptance ratio for TSCLnum subsequent STATWINDOWs. T.ADJSTEP is reset to its original input value whenever a series of subsequent observed acceptance ratios being greater than/less than ideal acceptance ratios is broken. If ever the TCU subtracts T.ADJSTEP from the current temperature and the result is a negative value, the system pseudo-temperature is set to T.MIN (an input argument). The final feature of the TCU is that although the initial system pseudo temperature is specified by the user, if multiple annealing cycles are employed, the initial pseudo-temperature for acceptance ratio annealing cycles after the first cycle is inferred from the decisions of the TCU on previous cycles.
+If the observed acceptance ratio keeps being below the ideal acceptance ratio for TSCLnum (an integer input argument) number of subsequent STATWINDOWs, T.ADJSTEP will be increased by a factor T.SCALING (an input argument). Similarly, T.ADJSTEP will also be decreased by a factor T.SCALING if the observed acceptance ratio is greater than the ideal acceptance ratio for TSCLnum subsequent STATWINDOWs. T.ADJSTEP is reset to its original input value whenever a series of subsequent observed acceptance ratios being greater than/less than ideal acceptance ratios is broken. If ever the TCU subtracts T.ADJSTEP from the current temperature and the result is a negative value, the system pseudo-temperature is set to T.MIN (an input argument). The final feature of the TCU is that although the initial system pseudo temperature is specified by the user, if multiple annealing cycles are employed, the initial pseudo-temperature for acceptance ratio annealing cycles, after the first cycle, is inferred from the decisions of the TCU on previous cycles.
 
-This collection of decision rules that comprise the TCU result in pseudo-temperature alterations that cause the observed acceptance ratios during Optimus optimsation runs to follow the ideal acceptance ratios remarkably well. Moreover, as will be highlighted in the five tutorials below, large temperature alterations are often required to align the observed acceptance ratios with the ideal ratios, a task which Optimus excels at, whereas other protocols would have difficulty and result in poor parameter sampling.
+The above collection of TCU decision rules with their default values result in pseudo-temperature modulations that assure the observed acceptance ratios during Optimus runs to follow the ideal acceptance ratios remarkably well. Moreover, as will be highlighted in the five tutorials below, large temperature alterations are often required to align the observed acceptance ratios with the ideal ratios, a task which Optimus excels at, whereas other protocols would have difficulties and result in poor parameter sampling because of fixed or gradually changing temperature regiments.
 
-## Replica Exchange Procedure
+## Acceptance Ratio Replica Exchange Procedure
 
-Optimus additionally supports replica exchange as an optimisation mode which can be selected in place of acceptance ratio annealing, provided that the user has access to multiple processors (ideally at least 4, and preferably 8 or more). The inspiration for this additional mode was taken from the parallel tempering Monte Carlo techniques and Replica Exchange Molecular Dynamics (REMD) simulations [@Sugita1999]. In particular, REMD simulation is a technique employed to obtain equilibrium sampling of a molecule (for instance, a protein) at a certain fixed (usually the lowest in a range) temperature. Let $T = \{T_1,T_2,...,T_n\}$ be a set of $n$ distinct temperatures for which $T_1 < T_2 < ... < T_n$. In REMD, $n$ replicas of molecular dynamics simulations for a given system (molecule) are initialised at each $T_i \in T$. Note that each temperature $T_i$ corresponds to a slightly different potential of the examined system to roam the energy landscape and cross the barriers. States possible to populate at a temperature $T_i$ can become a bit more accessible at a temperature $T_{i+1}$ and so on. If the state configurations in adjacent replicas are allowed to exchange, the simulation will be able to overcome energy barriers at various temperature replicas and thoroughly explore the parameter space. Moreover, for configuration $x_n$ in replica $T_i$ and configuration $x_m$ in replica $T_{i+1}$, equilibirum sampling is achieved by selecting appropriate exchange probabilities  [@Sugita1999], generally expressed as:
+Optimus additionally supports acceptance ratio replica exchange as an optimisation mode, which can be selected in place of acceptance ratio annealing, provided that the user has access to multiple processors (ideally at least 4, and preferably 8 or more). The inspiration for this additional mode was taken from the parallel tempering Monte Carlo techniques and Replica Exchange Molecular Dynamics (REMD) simulations [@Sugita1999]. In particular, REMD simulation is a technique employed to obtain equilibrium sampling of a molecular system (for instance, a protein) at a certain fixed (usually the lowest in a range) temperature. Let $T = \{T_1,T_2,...,T_n\}$ be a set of $n$ distinct temperatures for which $T_1 < T_2 < ... < T_n$. In REMD, $n$ replicas of molecular dynamics simulations for a given system are initialised at each $T_i \in T$. Note, that each temperature $T_i$ corresponds to a slightly different potential of the examined system to roam the energy landscape and cross the barriers. States possible to populate at a temperature $T_i$ can become a bit more accessible at a temperature $T_{i+1}$ and so on. If the state configurations in adjacent replicas are allowed to exchange, the simulation will be able to overcome energy barriers at various temperature replicas and thoroughly explore the parameter space. Moreover, for configuration $x_n$ in replica $T_i$, and configuration $x_m$ in replica $T_{i+1}$, equilibrium sampling is achieved by selecting appropriate exchange probabilities [@Sugita1999], generally expressed as:
 
 $$
 p_{re} = min(1, P(T_{i+1} - T_i;E(x_n)-E(x_m))
 $$
-Thus, overall, replica exchange simulations can be executed by simulating $n$ replicas of a simulation at distinct temperatures simultaneously and independently; and randomly selecting two configurations in adjacent replicas and exchanging them with probability $p_{re}$.
+Thus, overall, replica exchange simulations can be executed by simulating $n$ replicas of a simulation at distinct temperatures simultaneously and independently, next randomly selecting two configurations in adjacent replicas and exchanging them with probability $p_{re}$.
 
-Optimus modifies the Monte Carlo analogue of the replica exchange approach to apply to any arbitrary optimisation problem with two primary modifications. Firstly, due to the aforementioned transferability of utilising acceptance ratio as a controlling metric rather than pseudo temperature in arbitrary systems, Optimus initialises $n$ replicas with different fixed target acceptance ratios as opposed to fixed temperatures, and uses the previously described TCU for the adaptive thermoregulation to keep up with the fixed acceptance ratio values for varying $\textbf{K}$ within a given replica. Secondly, since that Optimus is only concerned with finding an optimal solution and is not compliant with any equilibrium sampling of the parameter space (see the A and B criteria described above), after two candidate configurations are selected for exchange, they are necessarily exchanged (this can be viewed as setting $p_{re} = 1$ in the above procedure) [@Ballard2009]. The exchange regiment is controlled through the input, with default optimal value that works well in most cases. By relaxing the equilibrium sampling criterion, the parameter space can be more extensively explored for the sole reason of finding an optimal solution. This approach produced good results, as illustrated in the tutorials, and is a viable alternative to the acceptance ratio annealing mode in Optimus, when the user has access to better computing resources.
+Optimus modifies the Monte Carlo analogue of the replica exchange approach to apply to any arbitrary optimisation problem with two primary modifications. Firstly, due to the aforementioned transferability of utilising acceptance ratio as a controlling metric rather than pseudo temperature in arbitrary systems, Optimus initialises $n$ replicas with different fixed target acceptance ratios as opposed to fixed temperatures, and uses the previously described TCU for the adaptive thermoregulation to keep up with the fixed acceptance ratio values for varying $\textbf{K}$ within a given replica. Secondly, since Optimus is only concerned with finding an optimal solution and is not compliant with any equilibrium sampling of the parameter space (see the A and B criteria described above), after two candidate configurations are selected for exchange, they are necessarily exchanged (this can be viewed as setting $p_{re} = 1$ in the above procedure) [@Ballard2009]. The exchange regiment is controlled through the input, with a default optimal value that works well in most cases. By relaxing the equilibrium sampling criterion, the parameter space can be more extensively explored for the sole reason of finding an optimal solution. This approach produces good results, as illustrated in the tutorials, and is a viable alternative to the acceptance ratio annealing mode in Optimus optimisations, when the user has access to better computational resources.
+
+# How to Cite
+
+The usage of Optimus should be accompanied with the following citations:
+
+ Nicholas A. G. Johnson, Liezel Tamon, Xin Liu and Aleksandr B. Sahakyan, http://github.com/SahakyanLab/Optimus, \textbf{2018+}.
+ 
+ Nicholas A. G. Johnson, Liezel Tamon, Xin Liu and Aleksandr B. Sahakyan, "\textit{General purpose adaptive optimisation engine in R}", Journal, Vol, ppXXX-XXX, in prep., \textbf{2022}.
 
 # Installation Instructions
 
-Installing Optimus locally for immediate use requires only R and a connection to the internet. After opening an R client, execute the commands below to install Optimus. Note that the latest version of Rtools is required for this installation to work. If it is not available locally and the installation is attempted from within RStudio, a prompt will appear to download and install Rtools. After following those instructions, restart the RStudio session before reattempting the Optimus installation.
+Installing Optimus locally for immediate use requires only R and a connection to the Internet. After opening an R client, execute the commands below to install Optimus. Note, that the latest version of Rtools is required for this installation to work. If it is not available locally and the installation is attempted from within RStudio, a prompt will appear to download and install Rtools. After following those instructions, restart the RStudio session before reattempting the Optimus installation.
 
 ```{r, tidy=FALSE, echo=TRUE, eval=FALSE}
 install.packaes("devtools")           # install devtools
@@ -259,10 +267,17 @@ library(Optimus)                      # load Optimus
 
 # Execution Instructions
 
-Optimus optimisation engine works seamlessly and requires little to no intervention from the user while applied to a wide variety of optimisation tasks. The part where the user must intervene is the specification of $\textbf{K}$, and the R functions corresponding to $r()$, $m()$, and the combined $e \circ u()$. The port through which user's data or objects can be supplied to be used in Optimus is implemented through the \texttt{DATA} argument in the model function \texttt{m()}. All the interfacing functions and objects have a minimal and well defined internal compliance rules in Optimus, and otherwise can be as simple or as complicated as the user requires, to plug Optimus to a desired modelling task.
+Optimus optimisation engine works seamlessly and requires little to no intervention from the user while applied to a wide variety of optimisation tasks. The part where the user must intervene is the specification of $\textbf{K}$, and the R functions corresponding to $r()$, $m()$, and the combined $e \circ u()$. Those objects serve as the application interface of the Optimus engine to any optimisation task. The port through which additional user data or objects can be supplied to Optimus, in case those are needed in the specification of a model, is implemented through the \texttt{DATA} argument that is passed to the model function \texttt{m()} and \texttt{u()}. All the interfacing functions and objects have a minimal and well defined internal compliance rules in Optimus, and otherwise can be flexible and as simple or complicated as the user requires, to properly plug Optimus into a desired modelling objective. The whole optimisation procedure with acceptance ratio annealing or replica exchange is then fully taken care of by the Optimus engine. 
 
-The five tutorials below showcase the usage of Optimus for five broadly different usage scenarios, with the particular focus on how to write the interfacing functions, and how the acceptance ratio annealing mode performs in comparison to the replica exchange one. The five examples below also cover the usage scenario where any external, more complicated programs can be linked with the R procedure. Moreover, we provide a built in function \texttt{OptimusExamples()}, which can
+The five tutorials below showcase the usage of Optimus in five, broadly different scenarios, with a particular focus on how to write the interfacing functions to plug the Optimus engine, and how the acceptance ratio annealing mode performs in comparison to the acceptance ratio replica exchange one. The examples also cover a usage scenario where an external, more complicated, program is linked to the R procedure. Furthermore, we provide a built in function \texttt{OptimusExamples()}, which can generate the necessary inputs for any of the mentioned five tutorials, ready for modifications to tailor those to particular needs. The \texttt{OptimusExamples()} function requires, at minimum, the tutorial identifier (1 to 5) along with the methodology specification (simulated annealing - SA; replica exchange - RE), in order to generate the interfacing Optimus input, which by default is saved as an \texttt{example.R} file within the current directory (all alterable).
 
+The recommended way to use Optimus would thus be by exploring and understanding the below tutorials, finding the example closest to one's objective, generating the input for that example using \texttt{OptimusExamples()}:
+
+```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
+OptimusExamples(example=2, method="SA")
+```
+
+then modifying the input objects to your specific needs and workflow.
 
 \newpage
 
@@ -270,20 +285,21 @@ The five tutorials below showcase the usage of Optimus for five broadly differen
 
 ## Problem Statement
 
-In this example, we shall use Optimus to find the coefficients of the polynomial function that is known to represent the observations $y$ the best. This, of course, is a simple task that can be addressed more robustly by least-squares linear model fitting. However, starting with this example will focus our attention on the organisation of the Optimus input, rather than the complexity of the task.
+In this example, we shall use Optimus to find the coefficients of the polynomial function that is known to represent the observations $y$ the best. This, of course, is a simple task that can be addressed more robustly by least-squares linear model fitting. However, by starting with this example, we shall focus our attention on the organisation of the Optimus input, rather than the complexity of the task.
 
 First of all, let us create some data for the example.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 set.seed(845)
 x <- runif(1000, min=-15, max=10)
-y <- -1.0*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x),mean=0,sd=30)
+y <- -1.0*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x), mean=0, sd=30)
 ```
 
 The good side of this noisy data generation is that we know the original function that describes it: $y = -1.0x - 0.3x^2 + 0.2x^3 + 0.01x^4$. Hence, we can check how well Optimus performs at finding the correct coefficients. The synthetic "real world" noisy data that we generated looks like this:
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-plot(main="Synthetic Example Dataset",x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
+plot(main="Synthetic Example Dataset", x=x, y=y,
+     col=rgb(0.5, 0.5, 0.9, 0.3), pch=16, cex=0.8)
 ```
 
 Before we turn to Optimus, let us see how the proper linear model fitting will perform using this data.
@@ -293,14 +309,16 @@ lm.model <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + 0)
 lm.model
 ```
 
-The least-squares linear model fitting for the coefficients to the known functional form is quite close to the original equation: $y = -0.741x - 0.307x^2 + 0.198x^3 + 0.010x^4$.
+The least-squares linear model fitting for the coefficients to the known functional form is, not surprisingly, rather close to the original equation $y = -0.741x - 0.307x^2 + 0.198x^3 + 0.010x^4$:
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-plot(main="Least-Squares Linear Model Fitting", x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
-lines(x=sort(x), y=predict(newdata=data.frame(x=sort(x)), object=lm.model), col="blue", lwd=2.0)
+plot(main="Least-Squares Linear Model Fitting", x=x, y=y,
+     col=rgb(0.5, 0.5, 0.9, 0.3), pch=16, cex=0.8)
+lines(x=sort(x), y=predict(newdata=data.frame(x=sort(x)),
+      object=lm.model), col="blue", lwd=2.0)
 ```
 
-The RMSD between the observed data y and the linear model fitting outcome is:
+The root mean squared deviation (RMSD) between the observed data $y$ and the linear model fitting outcome is:
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 y.pred <- predict(newdata=data.frame(x=x), object=lm.model)
@@ -318,84 +336,90 @@ sqrt(mean((y-y.realdep)^2))
 
 Now we can set up the inputs for the Optimus run. We shall use the model $k_1x+k_2x^2+k_3x^3+k_4x^4$ to fit the $y$ observables based on the values for $x$. The dependent functions that are needed for setting up an Optimus run, are given as inputs in the Optimus function call.
 
-First, we need to create an object $K$, which stores the initial values for the parameter(s) to be optimised. $K$ can be an object of any type. From a single numeric or character value to a vector of values or a data frame holding, say, Cartesian coordinates of a molecule to be optimised. The only requirement for $K$ is that it should be something alterable (via a rule function $r()$, see below) and something that influences the outcome of another required model function - $m()$ (see below). In this example, we have 4 coefficients to optimise from some random initial state. We can thus make $K$ be a numeric vector of size 4. Let us start from all the components being 1.0, which, as entries in $K$, can be both named and unnamed. Though not the case here, the entry-named data for $K$ can be essential for some models that specifically use coefficient names, for instance when a system of ODEs is used in the model function $m()$.
+First, we need to create the essential object \texttt{K}, which stores the initial values for the parameter(s) to be optimised. \texttt{K} can be an object of any type. From a single numeric or character value to a vector of values or a data frame holding, say, Cartesian coordinates of a molecule to be optimised. The only Optimus requirement from \texttt{K} is that it should be something alterable (\textit{via} a rule function \texttt{r()}, see below) and should influence the outcome of another required model function - \texttt{m()} (see below). In this example, we have 4 coefficients to optimise from some random initial state. We can thus make \texttt{K} be a numeric vector of size 4. Let us start from all the components being $1.0$, which, as entries in \texttt{K}, can be both named and unnamed. Though not the case here, the entry-named data for \texttt{K} can be essential for some models that specifically use coefficient names, for instance when a system of ODEs is used in the model function \texttt{m()} in one of the tutorials.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 K <- c(k1=1.0, k2=1.0, k3=1.0, k4=1.0) # entries are named as k1, k2, k3 and k4
 ```
 
-Second, we should create the function $m$ for the model. The function $m$ should be designed to operate on the whole set of parameter snapshot $K$ and return the corresponding observable object $O$. Please note that the size of $K$ and $O$ are not necessarily to match, depending on the nature of the model used. Operating on $K$ is the only hard condition on $m()$, which can optionally operate on other data as well. In our situation, the function $m()$ should operate on the provided instance of four coefficients (in the object $K$), and, additionally on the values $x$. It should then return a vector of observations $O$ (to be compared with $y$ target observations) of the same size as vector $x$. Any additional data required by the model, in our case an object with the set of 1000 $x$ values, must be provided to the function in an input variable DATA, a list holding the additional data that must be accessed by $m()$ and $u()$ (see below). The variable DATA must be provided to Optimus in the function call, and $m()$ must take it as an input (in the case that neither $m()$ nor $u()$ require additional data, the two functions should still be created such that they take a variable DATA as an input, and the variable DATA passed to Optimus will be set to NULL).
+Second, we should create the function \texttt{m()} for the model. The function \texttt{m()} should be designed to operate on the whole set of parameter snapshot \texttt{K} and return the corresponding observable object \texttt{O}. Please note that the size and shape of \texttt{K} and \texttt{O} are not necessarily to match, depending on the nature of the model used. Operating on \texttt{K} is \textbf{one of the hard conditions} on \texttt{m()}, which can optionally operate on other data as well. In our situation, the function \texttt{m()} should operate on the provided instance of four coefficients (in the object \texttt{K}), and, additionally on the values $x$. It should then return a vector of observations \texttt{O} (to be compared with $y$ target observations) of the same size as vector $x$. Any additional data required by the model, in our case an object with the set of 1000 $x$ values, must be provided to the function in an input variable \texttt{DATA}, a list holding the additional data that must be accessed by \texttt{m()} and \texttt{u()} (see below). The variable \texttt{DATA} \textbf{must be provided} to Optimus in the function call, and \texttt{m()} \textbf{must take it} as an input. In the case that neither \texttt{m()} nor \texttt{u()} require additional data, the two functions should still be created such that they take a variable \texttt{DATA} as an input, and the variable \texttt{DATA} passed to Optimus will be set to \texttt{NULL}).
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
+# Generating an object that is then to be passed to DATA argument of Optimus().
+# No need to call it DATA, as soon as it is passed to the DATA argument of Optimus().
 DATA   <- NULL
 DATA$x <- x
 DATA$y <- y
 
-m <- function(K,DATA){
+# Generating the m() function
+m <- function(K, DATA){
   x <- DATA$x
   O <- K["k1"]*x + K["k2"]*x^2 + K["k3"]*x^3 + K["k4"]*x^4
   return(O)
 }
 ```
 
-At this point, calling $m(K=K, DATA = DATA)$ will return the predicted $O$ set from the initial, non-optimal values for $K$, hence rather far from the target $O^{trg}=y$.
+At this point, calling \texttt{m(K=K, DATA=DATA)} from within Optimus will return the predicted \texttt{O} set from the initial, non-optimal values for \texttt{K}, hence rather far from the target $O^{trg}=y$.
 
-In this example, the optimisation goal is for the $O$ model outcomes to come as close as possible to the target observations $y$, to be achieved by optimising the coefficients $K$. The object $y$ holding the target values therefore also needs to be specified and given as an input to the $Optimus()$ function (as an entry in the DATA variable), just like x required, in this example, by the function $m()$.
+In this example, the optimisation goal is for the \texttt{O} model outcomes to come as close as possible to the target observations $y$, to be achieved by optimising the coefficients \texttt{K}. The object $y$ holding the target values therefore also needs to be specified and given as an input to the main \texttt{Optimus()} function (as a constituent entry in the \texttt{DATA} argument), just like $x$ was supplied, as required, in this example, by the function \texttt{m()}.
 
-Now, we need to define how the performance of a given snapshot of coefficients $K$ is to be evaluated. For Optimus, this is done by specifying a function $u()$, which should necessarily take as inputs $O$ (the output of $m()$) and the variable DATA. The output should have two components, $Q$ holding a single number of the quality of the $K$ coefficients, and $E$ holding a (pseudo)energy for the given snapshot $K$. It is important that the returned (pseudo)energy value is lower for better performance/version of $K$, never vice-versa. The $Q$ component of the $u()$ function output is only used for plotting the optimisation process, and, if desired, can just repeat the value of the $E$ component.
+Now, we need to define how the performance of a given snapshot of coefficients \texttt{K} is to be evaluated. For Optimus, this is done by specifying a function \texttt{u()}, which should \textbf{necessarily} take as inputs \texttt{O} (the output of \texttt{m()}) and the variable \texttt{DATA}. The output should have two components, \texttt{Q} holding a single number of the quality of the \texttt{K} coefficients, and \texttt{E} holding a (pseudo) energy for the given snapshot \texttt{K}. It is important that the returned (pseudo) energy value \textbf{must be lower for better performance/version} of \texttt{K}, never vice-versa. The \texttt{Q} component of the \texttt{u()} function output is only used for plotting the optimisation process, and, if desired, can just repeat the value of the \texttt{E} component.
 
-For our example, the $u()$ function will assess the agreement between the snapshot of predictions $O$ and the complete set of real observables (target) $y$. Here, we can use RMSD between $O$ and $y$ as a measure of $K$ snapshot quality ($Q$). Since bettter agreement means better RMSD, it can be directly used as a pseudo-energy ($E$), without putting a negative sign or performing some other mathematical operation on $Q$.
+For our example, the \texttt{u()} function will assess the agreement between the snapshot of predictions \texttt{O} and the complete set of real observables (target) $y$. Here, we can use RMSD between \texttt{O} and $y$ as a measure of \texttt{K} snapshot quality (\texttt{Q}). Since better agreement means better RMSD, it can be directly used as a pseudo energy (\texttt{E}), without putting a negative sign or performing some other mathematical operation on \texttt{Q}.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
-u <- function(O,DATA){
+u <- function(O, DATA){
   y <- DATA$y
   Q <- sqrt(mean((O-y)^2))
   E <- Q # For RMSD, <-> negative sign or other mathematical operation
          # is not needed.
 
-  RESULT <- NULL
+  RESULT   <- NULL
   RESULT$Q <- Q
   RESULT$E <- E
   return(RESULT)
 }
 ```
 
-And finally, we need to define the rule, by which the $K$ coefficient vector is to be altered from one step to another. This is done by defining a rule function $r()$ that must take $K$, and return an object equivalent to $K$, but with some alteration(s). In this example, for each snapshot of $K$, we shall randomly select one of its four coefficients, then either increment or decrement (chosen randomly) it by 0.0005, returning the altered set of coefficients.
+And finally, we need to define the rule, by which the \texttt{K} coefficient vector is to be altered from one step to another. This is done by defining a rule function \texttt{r()} that \textbf{must take} \texttt{K}, and \textbf{return an object analogous to} \texttt{K}, but with some alteration(s). In this example, for each snapshot of \texttt{K}, we shall randomly select one of its four coefficients, then either increment or decrement (chosen randomly) it by 0.0005, returning the altered set of coefficients.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 r <- function(K){
-  K.new <- K
+  K.new     <- K
+  move.step <- 0.0005
+  
   # Randomly selecting a coefficient to alter:
   K.ind.toalter <- sample(size=1, x=1:length(K.new))
+  
   # Creating a potentially new set of coefficients where one entry is altered
   # by either +move.step or -move.step, also randomly selected:
-  move.step <- 0.0005
-  K.new[K.ind.toalter] <- K.new[K.ind.toalter] + sample(size=1, x=c(-move.step,      move.step))
-
-  ## Setting the negative coefficients to 0 (not necessary in this example,
-  ## useful for optimising rate constants):
-  #neg.ind <- which(K.new < 0)
-  #if(length(neg.ind)>0){ K.new[neg.ind] <- 0 }
+  K.new[K.ind.toalter] <- K.new[K.ind.toalter] + sample(size=1, x=c(-move.step, move.step))
 
   return(K.new)
 }
 ```
 
-All the constructed objects ($K$) and functions ($m, u, r$), as well as the data required by $m()$ and $u()$ (stored in the variable DATA) should be defined in an R session and given to Optimus as inputs. The users are free to define some dependencies as additional files (for example initial protein geometry for a Monte-Carlo optimisation), which should be called from within the function definitions.
+All the constructed objects (\texttt{K}) and functions (\texttt{m}, \texttt{u}, \texttt{r}), as well as the data required by \texttt{m()} and \texttt{u()} (stored in the variable to be passed to \texttt{DATA}) should be defined in an R session and given to Optimus as inputs. The users are free to define some dependencies as additional files (for example: initial protein geometry for a Monte-Carlo optimisation), which should be called from within the function definitions.
 
 ## Acceptance Ratio Annealing Optimus Run
 
-Having constructed $K$, DATA, $m()$, $u()$ and $r()$, we are now ready to call Optimus. Let us first investigate the Acceptance Ratio Annealing (SA) version of Optimus on 4 processors (the vast majority of personal computers currently have 4 processors), which can be executed as follows:
+Having constructed \texttt{K}, dependent data for \texttt{DATA} argument of \texttt{Optimus()}, \texttt{m()}, \texttt{u()} and \texttt{r()}, we are now ready to call Optimus. Let us first investigate the Acceptance Ratio Annealing (SA) version of Optimus on 4 CPUs (the vast majority of personal computers currently have at least 4 CPUs), which can be executed as follows:
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
-Optimus(NCPU = 4, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, OPT.TYPE = "SA", DATA = DATA, OPTNAME = "poly_4_SA", LONG = FALSE)
+Optimus(NCPU=4, OPTNAME="poly_4_SA", LONG=FALSE,
+        OPT.TYPE="SA",
+        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA = DATA)
 ```
 
-Note that the field $LONG = FALSE$ is included in the function call so that all data from the optimsation process is saved. Calling Optimus with $LONG = TRUE$ will result in a memory saving optimisation process (more details in the Advanced User Manual). Of the 4 optimisation replicas, the second and fourth processors found the best parameter configuration (lowest RMSD):
+Note that the field \texttt{LONG=FALSE} is included in the function call so that all data from the optimsation process is saved. Calling Optimus with \texttt{LONG=TRUE} will result in a memory saving optimisation process (more details in the Advanced Usage section in this document). Of the 4 optimisation replicas, the second and fourth CPUs found the best parameter configuration (lowest RMSD) in our trial:
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-plot(main="Acceptance Ratio Annealing Optimus Fitting (4 Cores)", x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
-lines(x=sort(x), y=-0.3760*sort(x) - 0.2825*(sort(x))^2 + 0.192*(sort(x))^3 + 0.0095*(sort(x))^4, col="blue", lwd=2.0)
+plot(main="Acceptance Ratio Annealing Optimus Fitting (4 Cores)",
+     x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
+
+lines(x=sort(x),
+      y=-0.3760*sort(x) - 0.2825*(sort(x))^2 + 0.192*(sort(x))^3 + 0.0095*(sort(x))^4,
+      col="blue", lwd=2.0)
 ```
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
@@ -404,43 +428,51 @@ T1_SA_p2 <- c(28.841, -0.3760, -0.2825, 0.1920, 0.0095)
 T1_SA_p3 <- c(28.864, -0.1045, -0.2820, 0.1905, 0.0095)
 T1_SA_p4 <- c(28.841, -0.3760, -0.2825, 0.1920, 0.0095)
 data <- data.frame(rbind(T1_SA_p1, T1_SA_p2, T1_SA_p3, T1_SA_p4))
-row.names(data) <- c("Processor 1", "Processor 2", "Processor 3", "Processor 4")
-colnames(data) <- c("E (RMSD)", "K1", "K2", "K3", "K4")
+row.names(data) <- c("CPU 1", "CPU 2", "CPU 3", "CPU 4")
+colnames(data)  <- c("E (RMSD)", "K1", "K2", "K3", "K4")
 library(knitr)
-kable(data, caption = "4 Core Acceptance Ratio Annealing Optimus Run Results")
+kable(data, caption="4-core Acceptance Ratio Annealing run results from Optimus.")
 ```
 
-The equation recovered by Processor 2 (and 4) is $y = -0.3760x - 0.2825x^2 + 0.192x^3 + 0.0095x^4$.
+The equation recovered by CPU 2 (and 4) is $y = -0.3760x - 0.2825x^2 + 0.1920x^3 + 0.0095x^4$.
 
-Notice that although the RMSD of this solution, $28.841$, is greater than the RMSD of the least squares solution, $28.82655$, it is less than the RMSD of the
-de-noised data found above, $28.85858$.
+Notice that although the RMSD of this solution, $28.841$, is greater than the RMSD of the least squares solution, $28.827$, it is less than the RMSD of the
+de-noised data found above, $28.859$.
 
-The two graphs below illustrate the evolution of the system pseudo-temperature in response to alterations made by the Temperature Control Unit (TCU) as a function of the optimsation iteration and the observed acceptance ratio as a function of the optimisation iteration respectively. The graphs show data from the last 20 000 iterations of the optimisation executed by Processor 2.
+The two graphs below illustrate i) the evolution of the system pseudo temperature, in response to alterations made by the Temperature Control Unit (TCU), as a function of the optimsation step; and ii) the observed acceptance ratio as a function of the optimisation step, respectively. The graphs show data from the last $20 000$ steps of the optimisation executed by CPU 2.
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-load("example_1/TutorialData/poly_4_SA2_model_ALL.Rdata")
+load("../data/poly_4_SA2_model_ALL.Rdata")
 
 T.DE.FACTO            <- OUTPUT$T.DE.FACTO[980001:1000000]
 STEP.STORED           <- OUTPUT$STEP.STORED[980001:1000000]
 IDEAL.ACC.VEC         <- OUTPUT$IDEAL.ACC.VEC
-ACC.VEC.DE.FACTO      <- OUTPUT$ACC.VEC.DE.FACTO[ceiling(980001/70):length(OUTPUT$ACC.VEC.DE.FACTO)]
-STEP4ACC.VEC.DE.FACTO <- OUTPUT$STEP4ACC.VEC.DE.FACTO[ceiling(980001/70):length(OUTPUT$STEP4ACC.VEC.DE.FACTO)]
+ACC.VEC.DE.FACTO      <-
+  OUTPUT$ACC.VEC.DE.FACTO[ceiling(980001/70):length(OUTPUT$ACC.VEC.DE.FACTO)]
+STEP4ACC.VEC.DE.FACTO <-
+  OUTPUT$STEP4ACC.VEC.DE.FACTO[ceiling(980001/70):length(OUTPUT$STEP4ACC.VEC.DE.FACTO)]
 ```
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE, fig.height = 5, fig.width = 10}
-plot(main="System Pseudo-Temperature (Processor 2)", y=T.DE.FACTO, x=STEP.STORED, ylab="Temperature", xlab="Step", xlim=range(STEP.STORED), type="l", col="orange", lwd=2)
+plot(main="System pseudo temperature (CPU 2)",
+     y=T.DE.FACTO, x=STEP.STORED, ylab="Temperature", xlab="Step",
+     xlim=range(STEP.STORED), type="l", col="orange", lwd=2)
 ```
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE, fig.height = 5, fig.width = 10}
-plot(main="Observed Acceptance Ratio (Processor 2)", y=IDEAL.ACC.VEC[STEP.STORED], x=STEP.STORED, ylab="Acceptance ratios (%)", xlab="Step", ylim=c(0,100), xlim=range(STEP.STORED), type="l",lty="dashed", lwd=2)
-lines(y=ACC.VEC.DE.FACTO, x=STEP4ACC.VEC.DE.FACTO, ylim=c(0,100), xlim=range(STEP.STORED), col="red", lwd=2)
+plot(main="Observed acceptance ratio evolution (CPU 2)",
+     y=IDEAL.ACC.VEC[STEP.STORED], x=STEP.STORED, ylab="Acceptance ratios (%)",
+     xlab="Step", ylim=c(0,100), xlim=range(STEP.STORED), type="l", lty="dashed", lwd=2)
+
+lines(y=ACC.VEC.DE.FACTO, x=STEP4ACC.VEC.DE.FACTO, ylim=c(0,100),
+      xlim=range(STEP.STORED), col="red", lwd=2)
 ```
-In the graph titled "Observed Acceptance Ratio (Processor 2)," the solid red line tracks the observed acceptance ratios calculated by Optimus at the end of each STATWINDOW and the dashed black line tracks the target acceptance ratio based on the annealing schedule. From the above two graphs, notice that while the observed acceptance ratio tracks the target acceptance ratio closely, the system pseudo-temperature changes significantly and non-monotonically. This illustrates that the adaptive thermoregulation of the TCU allows Optimus to effectively anneal the system acceptance ratio.
+In the first plot, the solid red line tracks the observed acceptance ratios calculated by Optimus at the end of each \texttt{STATWINDOW} and the dashed black line tracks the target acceptance ratio based on the annealing schedule. From the above two graphs, notice that while the observed acceptance ratio tracks the target acceptance ratio closely, the system pseudo temperature changes significantly and non-monotonically. This illustrates that the adaptive thermoregulation allows Optimus to effectively anneal the system acceptance ratio.
 
 ## Replica Exchange Optimus Run
 
-Let us now consider the Replica Exchange version of Optimus on 12 processors. Let us reiterate that the purpose here is to illustrate how to run an optimisation using the Replica Exchange version of Optimus; this method is of course not the most robust method to solve this simple task and is likely overkill.
+Let us now consider the Replica Exchange version of Optimus on 12 processors. The purpose here is to illustrate how to run an optimisation using the Replica Exchange version of Optimus; this method is of course an overkill for solving this simple task.
 
-In addition to the arguments specified above, the Replica Exchange version of Optimus also requires an input variable ACCRATIO which is a vector that defines the acceptance ratio to be used for each of the Replicas initiated, 12 in this case (note that the length of ACCRATIO must always be equal to the argument NCPU).
+In addition to the arguments specified above, the Replica Exchange version of Optimus also requires an input variable \texttt{ACCRATIO}, which is a vector that defines the acceptance ratios to be used for each of the replicas initiated, 12 in this case. Note that the length of \texttt{ACCRATIO} must always be equal to the argument \texttt{NCPU}.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 ACCRATIO <- c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
@@ -449,13 +481,17 @@ ACCRATIO <- c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
 Having defined the acceptance ratios for each level, the optimisation can be executed as follows:
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
-Optimus(NCPU = 12, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, ACCRATIO = ACCRATIO, OPT.TYPE = "RE", DATA = DATA, OPTNAME = "poly_12_RE", LONG = FALSE)
+Optimus(NCPU=12, OPTNAME="poly_12_RE", LONG=FALSE,
+        OPT.TYPE="RE", ACCRATIO=ACCRATIO,
+        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)
 ```
 
-Of the 12 optimisation replicas, replica 8 finds the best parameter configuration (lowest RMSD):
+Of the 12 optimisation replicas, replica 8 finds the best parameter configuration (lowest RMSD) in this trial:
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-plot(main="Replica Exchange Optimus Fitting (12 Cores)", x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
+plot(main="Replica Exchange Optimus run (12 cores)",
+     x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
+
 lines(x=sort(x), y=-0.8175*sort(x) - 0.313*(sort(x))^2 + 0.199*(sort(x))^3 + 0.01*(sort(x))^4, col="blue", lwd=2.0)
 ```
 
@@ -472,82 +508,99 @@ T1_RE_p9  <- c(26, 28.84057, -0.5760, -0.2740, 0.1940, 0.0095)
 T1_RE_p10 <- c(18, 29.48785, -2.7805, -0.5420, 0.2325, 0.0130)
 T1_RE_p11 <- c(10, 28.85095, -1.1370, -0.3515, 0.2045, 0.0105)
 T1_RE_p12 <- c(2, 29.41377, 1.2255, -0.0895, 0.1645, 0.0070)
-data <- data.frame(rbind(T1_RE_p1, T1_RE_p2, T1_RE_p3, T1_RE_p4, T1_RE_p5, T1_RE_p6, T1_RE_p7, T1_RE_p8, T1_RE_p9, T1_RE_p10, T1_RE_p11, T1_RE_p12))
-row.names(data) <- c("Processor 1", "Processor 2", "Processor 3", "Processor 4", "Processor 5", "Processor 6", "Processor 7", "Processor 8", "Processor 9", "Processor 10", "Processor 11", "Processor 12")
+data <- data.frame(rbind(T1_RE_p1, T1_RE_p2, T1_RE_p3, T1_RE_p4, T1_RE_p5,
+                         T1_RE_p6, T1_RE_p7, T1_RE_p8, T1_RE_p9, T1_RE_p10,
+                         T1_RE_p11, T1_RE_p12))
+row.names(data) <- c("CPU 1", "CPU 2", "CPU 3", "CPU 4", "CPU 5", "CPU 6", "CPU 7", "CPU 8", "CPU 9", "CPU 10", "CPU 11", "CPU 12")
 colnames(data) <- c("Replica Acceptance Ratio", "E (RMSD)", "K1", "K2", "K3", "K4")
-kable(data, caption = "12 Core Replica Exchange Optimus Run Results")
+kable(data, caption = "12-core Replica Exchange run results from Optimus.")
 ```
 
-The equation recovered by Processor 8 is $y = -0.8175x - 0.313x^2 + 0.199x^3 + 0.01x^4$.
+The equation recovered by CPU 8 is $y = -0.8175x - 0.313x^2 + 0.199x^3 + 0.01x^4$.
 
-Notice that the RMSD of this solution, $28.82721$, is less than the RMSD of the Acceptance Ratio Annealing solution, $28.841$, and only slightly greater than the RMSD of the least squares solution, $28.82655$.
+Notice that the RMSD of this solution, $28.8272$, is less than the RMSD of the Acceptance Ratio Annealing solution, $28.841$, and only slightly greater than the RMSD of the least squares solution, $28.8266$.
 
-Let us now briefly examine the evolution of the system pseudo-temperature in response to alterations made by the Temperature Control Unit (TCU) as a function of the optimsation iteration and the observed acceptance ratio as a function of the optimisation iteration for the Replica Exchange version of Optimus. The following two graphs represent data from the last 20 000 iterations of the optimisation replica running on Processor 8 (34% target acceptance ratio).
+Let us now briefly examine the evolution of the system pseudo temperature and acceptance ratio compliance in response to the adaptive thermoregulation. The following two graphs represent data from the last $20 000$ steps of optimisation replica running on CPU 8 (fixed 34% target acceptance ratio).
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-load("example_1/TutorialData/poly_12_RE8_model_ALL.Rdata")
+load("../data/poly_12_RE8_model_ALL.Rdata")
 
 repl                  <- 8
 T.DE.FACTO            <- OUTPUT$T.DE.FACTO[980001:1000000]
 STEP.STORED           <- OUTPUT$STEP.STORED[980001:1000000]
 IDEAL.ACC.VEC         <- OUTPUT$IDEAL.ACC.VEC
-ACC.VEC.DE.FACTO      <- OUTPUT$ACC.VEC.DE.FACTO[ceiling(980001/70):length(OUTPUT$ACC.VEC.DE.FACTO)]
-STEP4ACC.VEC.DE.FACTO <- OUTPUT$STEP4ACC.VEC.DE.FACTO[ceiling(980001/70):length(OUTPUT$STEP4ACC.VEC.DE.FACTO)]
+ACC.VEC.DE.FACTO      <-
+  OUTPUT$ACC.VEC.DE.FACTO[ceiling(980001/70):length(OUTPUT$ACC.VEC.DE.FACTO)]
+STEP4ACC.VEC.DE.FACTO <-
+  OUTPUT$STEP4ACC.VEC.DE.FACTO[ceiling(980001/70):length(OUTPUT$STEP4ACC.VEC.DE.FACTO)]
 ```
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE, fig.height = 5, fig.width = 10}
-plot(main="System Pseudo-Temperature (Processor 8 - 34% Acceptance Ratio)", y=T.DE.FACTO, x=STEP.STORED, ylab="Temperature", xlab="Step", xlim=range(STEP.STORED), type="l", col="orange", lwd=2)
+plot(main="System pseudo temperature (CPU 8 - 34% acceptance ratio)",
+     y=T.DE.FACTO, x=STEP.STORED, ylab="Temperature", xlab="Step",
+     xlim=range(STEP.STORED), type="l", col="orange", lwd=2)
 ```
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE, fig.height = 5, fig.width = 10}
-plot(main="Observed Acceptance Ratio (Processor 8 - 34% Acceptance Ratio)", y=rep(IDEAL.ACC.VEC[repl],length(STEP.STORED)), x=STEP.STORED, ylab="Acceptance ratios (%)", xlab="Step", ylim=c(0,100), xlim=range(STEP.STORED), type="l",lty="dashed", lwd=2)
-lines(y=ACC.VEC.DE.FACTO, x=STEP4ACC.VEC.DE.FACTO, ylim=c(0,100), xlim=range(STEP.STORED), col="red", lwd=2)
+plot(main="Observed acceptance ratio (CPU 8 - 34% acceptance ratio)",
+     y=rep(IDEAL.ACC.VEC[repl],length(STEP.STORED)), x=STEP.STORED,
+     ylab="Acceptance ratios (%)", xlab="Step", ylim=c(0,100),
+     xlim=range(STEP.STORED), type="l",lty="dashed", lwd=2)
+
+lines(y=ACC.VEC.DE.FACTO, x=STEP4ACC.VEC.DE.FACTO, ylim=c(0,100),
+      xlim=range(STEP.STORED), col="red", lwd=2)
 ```
 
-Notice that in the observed acceptance ratio graph, the dashed line indicating the target acceptance ratio is constant (as opposed to linearly changing as in acceptance ratio annealing). This is because each processor in the replica exchnage mode has a single target acceptance ratio, as articulated in the previous section of this manual which addressed the theoretical underpinnings of Optimus. Here again, adaptive decisions made by the TCU result in non-monotonic, non uniform psuedo-temperature adjustments while the observed acceptance ratios fluctuates relatively closely around the target ratio.
+Notice that in the observed acceptance ratio graph, the dashed line indicating the target acceptance ratio is constant (as opposed to linearly changing as in acceptance ratio annealing). This is because each processor in the replica exchange mode has a single target acceptance ratio, as described above. Here again, adaptive decisions on the pesudo temperature to maintain the desired acceptance ratio result in non-monotonic, and non-uniform pseudo temperature adjustments, while the observed acceptance ratios fluctuate relatively closely around the set target value.
 
 ## Summary
 
-We now understand the input requirements to interface with the Acceptance Ratio Annealing and Replica Exchange versions of Optimus. In this example, both the Acceptance Ratio Annealing and Replica Exchange Optimus versions retrieved solutions having a lower RMSD than the de-noised data and only a slightly greater RMSD than the optimal Least Squares solution. Replica Exchange resulted in a better solution than Acceptance Ratio Annealing, at the cost of greater computing resources.
+We now understand the input requirements to interface with the Acceptance Ratio Annealing and Replica Exchange versions of Optimus. In this example, both versions retrieved solutions having a lower RMSD than the de-noised data, and only a slightly greater RMSD than the optimal least squares solution. Replica Exchange resulted in a better solution than Acceptance Ratio Annealing, at the cost of greater computing resources.
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-DN <- c(28.85858, -1, -0.3, 0.2, 0.01)
-SA <- c(28.841, -0.3760, -0.2825, 0.1920, 0.0095)
+DN <- c(28.85858, -1.0000, -0.3000, 0.2000, 0.0100)
+SA <- c(28.84100, -0.3760, -0.2825, 0.1920, 0.0095)
 RE <- c(28.82721, -0.8175, -0.3130, 0.1990, 0.0100)
-LS <- c(28.82655, -0.74056, -0.30735, 0.19777, 0.00991)
+LS <- c(28.82655, -0.7406, -0.3074, 0.1978, 0.0099)
 data <- data.frame(rbind(DN, SA, RE, LS))
 row.names(data) <- c("De-noised Function", "Optimus (Acceptance Ratio Annealing)", "Optimus (Replica Exchange)", "Least Squares")
 colnames(data) <- c("E (RMSD)", "K1", "K2", "K3", "K4")
-kable(data, caption = "Summary of Solutions")
+kable(data, caption = "Summary of solutions.")
 ```
 
 \newpage
 
-# Tutorial 2: Selecting Terms for a Least Squares Representation of Data
+# Tutorial 2: Finding an Equation by Selecting Terms For Data Representation
 
 ## Problem Statement
 
-Consider again the synthetic data that was created in Tutorial 1. Suppose that we were only provided with the data and, unlike in Tutorial 1, had no knowledge of the best terms to be included in a functional representation of said data. In this example, we shall use Optimus to determine which terms should be used in a Least Squares representation of the data to achieve a representation with low RMSD while not overfitting the data.
+Consider again the synthetic data that was created in \textbf{Tutorial 1}. Suppose that we were only provided with the data and, unlike in \textbf{Tutorial 1}, had no knowledge of the best terms to be included in a functional representation of said data. In this example, we shall use Optimus to determine which terms should be used in a least squares fitting of the data to achieve a representation with low RMSD while avoiding overfitting the data with too complicated equation.
 
 Let us start by generating the same data which was used in Tutorial 1:
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 set.seed(845)
 x <- runif(1000, min=-15, max=10)
-y <- -1.0*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x),mean=0,sd=30)
+y <- -1.0*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x), mean=0, sd=30)
 ```
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-plot(main="Synthetic Example Dataset",x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
+plot(main="Synthetic Example Dataset",
+     x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
+
 lm.model <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + 0)
 ```
 
-From Tutorial 1, we know that if presented with this data and under the assumption that the most appropriate model to describe the data is $k_1x+k_2x^2+k_3x^3+k_4x^4$, the Least Squares model fitting is $y = -0.741x - 0.307x^2 + 0.198x^3 + 0.010x^4$. We also know that the RMSD between the observed data y and the linear model fitting outcome is:
+From \textbf{Tutorial 1}, we know that if presented with this data and under the assumption that the most appropriate model to describe the data is $k_1x+k_2x^2+k_3x^3+k_4x^4$, the Least Squares model fitting is $y = -0.741x - 0.307x^2 + 0.198x^3 + 0.010x^4$. We also know that the RMSD between the observed data $y$ and the linear model fitting outcome is:
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
 y.pred <- predict(newdata=data.frame(x=x), object=lm.model)
 sqrt(mean((y-y.pred)^2))
-plot(main="Least-Squares Linear Model Fitting", x=x, y=y, col=rgb(0.5,0.5,0.9,0.3), pch=16, cex=0.8)
-lines(x=sort(x), y=predict(newdata=data.frame(x=sort(x)), object=lm.model), col="blue", lwd=2.0)
+
+plot(main="Least-Squares Linear Model Fitting",
+     x=x, y=y, col=rgb(0.5, 0.5, 0.9, 0.3), pch=16, cex=0.8)
+
+lines(x=sort(x), y=predict(newdata=data.frame(x=sort(x)), object=lm.model),
+      col="blue", lwd=2.0)
 ```
 
 ## Defining Optimus Inputs
@@ -564,12 +617,11 @@ $$
 y = b + \sum_{i=1}^{\mathbf{card}(terms)} k_ic_iterms_i
 $$
 
-where each $k_i$ is a binary variable (meaning a variable taking a value of either 0 or 1) indicating whether the $i^{th}$ term is included in the representation, each $c_i$ is a non-zero coefficient for the $i^{th}$ term and b is a real number (the intercept). In our case, $\mathbf{card}(terms) = 30$ so explicitly, our model is:
+where each $k_i$ is a binary variable (meaning a variable taking a value of either 0 or 1) indicating whether the $i^{th}$ term is included in the representation, each $c_i$ is a non-zero coefficient for the $i^{th}$ term and $b$ is a real number (the intercept). In our case, $\mathbf{card}(terms) = 30$ so explicitly, our model is:
 
 $y = b+k_1c_1x+k_2c_2x^2+k_3c_3x^3+k_4c_4x^4+k_5c_5x^5+k_6c_6x^6+k_7c_7x^7+k_8c_8x^8+k_9c_9x^9+k_{10}c_{10}x^{10}+k_{11}c_{11}e^x+k_{12}c_{12}|x|+k_{13}c_{13}six(x)+k_{14}c_{14}cos(x)+k_{15}c_{15}tan(x)+k_{16}c_{16}sin(x)cos(x)+k_{17}c_{17}sin^2(x)+k_{18}c_{18}cos^2(x)+k_{19}c_{19}sin(x^2)+k_{20}c_{20}sin(x^3)+k_{21}c_{21}cos(x^2)+k_{22}c_{22}cos(x^3)+k_{23}c_{23}sin(x^3)cos(-x)+k_{24}c_{24}cos(x^3)sin(-x)+k_{25}c_{25}sin(x^5)cos(-x)+k_{26}c_{26}cos(x^5)sin(-x)+k_{27}c_{27}e^xsin(x)+k_{28}c_{28}e^xcos(x)+k_{29}c_{29}|x|sin(x)+k_{30}c_{30}|x|cos(x)$
 
-Formally, $K$ will be a numeric vector of length $\mathbf{card}(terms)$ whose $i^{th}$ entry is $k_i$. $K$ uniquely specifies a set $activeTerms = \{terms_i \:\forall \:i \:| k_i = 1 \}$. Note that $activeTerms \subseteq terms$. Each binary variable $k_i$ should be initialized randomly as below:
-
+Formally, \texttt{K} will be a numeric vector of length $\mathbf{card}(terms)$ whose $i^{th}$ entry is $k_i$. \texttt{K} uniquely specifies a set $activeTerms = \{terms_i \:\forall \:i \:| k_i = 1 \}$. Note that $activeTerms \subseteq terms$. Each binary variable $k_i$ should be initialized randomly as below:
 
 ```{r, tidy=FALSE, echo=TRUE, eval=TRUE}
 K <- c(term1=rbinom(n=1, size=1, prob=0.5),
@@ -604,7 +656,7 @@ K <- c(term1=rbinom(n=1, size=1, prob=0.5),
        term30=rbinom(n=1, size=1, prob=0.5))
 ```
 
-Next, we must define the model function $m$ that will operate on the parameter snapshot $K$ and return an observable object $O$. For a given set $activeTerms$ specified by $K$, $m()$ will fit a linear model to the data using the entries in $activeTerms$ and using the built in generalized linear model ($glm()$) function in R, thereby determining values for the variables $c_i$ and $b$. Accordingly, $m()$ will require access to the variables $x$ and $y$, which will be provided as entries in DATA, a variable of type list, as in Tutorial 1. The object $O$ will be the corresponding output of the function $glm()$. In the case that the set $activeTerms$ is the empty set (meaning that all entries in $K$ are 0), $m()$ will fit a model using the relationship y~x.
+Next, we must define the model function \texttt{m()} that will operate on the parameter snapshot \texttt{K} and return an observable object \texttt{O}. For a given set $activeTerms$ specified by \texttt{K}, \texttt{m()} will fit a linear model to the data using the entries in $activeTerms$ and using the built in generalised linear model (\texttt{glm()}) function in R, thereby determining values for the variables $c_i$ and $b$. Accordingly, \texttt{m()} will require access to the variables $x$ and $y$, which will be provided as entries in \texttt{DATA}, a variable of type list, as in \textbf{Tutorial 1}. The object \texttt{O} will be the corresponding output of the function \texttt{glm()}. In the case that the set $activeTerms$ is the empty set (meaning that all entries in \texttt{K} are 0), \texttt{m()} will fit a model using the relationship $y$~$x$.
 
 ```{r, tidy=FALSE, echo=TRUE, eval=TRUE}
 DATA   <- NULL
@@ -659,15 +711,16 @@ m <- function(K, DATA){
 }
 ```
 
-Having defined the function $m$, we can now proceed to define the function $u$, which will define how well a given configuration of parameters $K$ is performing by operating on the observable object $O$ outputted by $m()$ and on the variable DATA. Here, to quantify (and thus be able to compare) the desirability of a given model for the data, we will employ the Aikake Information Criterion ($AIC$) from Information Theory, defined as follows where $p$ is the number of parameters in the fitted model $M$ and $L$ is the likelihood of the model given the data:
+Having defined \texttt{m}, we can now proceed to define the function \texttt{u}, which will determine how well a given configuration of parameters \texttt{K} is performing by operating on the observable object \texttt{O} outputted by \texttt{m()} and on the variable \texttt{DATA}. Here, to quantify (and thus be able to compare) the desirability of a given model for the data, we will employ the Akaike Information Criterion ($AIC$) from information theory, defined as follows:
 
 $$
 AIC(M) = 2p - 2ln(L)
 $$
+where $p$ is the number of parameters in the fitted model, $L$ is the maximum likelihood of the model $M$ given the data.
 
-The target representation will be the fitted model $M$ (whose terms are elements of $terms$) that minimizes the $AIC$. It is important to note that the $2p$ term in the $AIC$ penalizes overfitting by increasing $AIC$ as function of the number of parameters while the $-2ln(L)$ term rewards models that better represent the data by decreasing $AIC$ as a function of the likelihood of the model.
+The target representation will be the fitted model $M$ (whose terms are elements of $terms$) that minimises the $AIC$. It is important to note that the $2p$ term in the $AIC$ penalises overfitting by increasing $AIC$ as function of the number of parameters, while the $-2ln(L)$ term rewards models that better represent the data by decreasing $AIC$ as a function of the likelihood of the model.
 
-As articulated in Tutorial 1, the output of $u()$ should have a component $E$ holding a pseudo-energy for the parameter snapshot $K$ and a component $Q$ that can be used for plotting the optimisation process. In this case, $E$ will be equal to the value of $AIC$ (implemented using the built in $AIC()$ function in R) and $Q$ will be equal to the RMSD between the predicted values of $y$ from the fitted model and the actual $y$ values. Consequently, $u()$ will need access to the variable $y$. The definition of $u()$ is below:
+As articulated in \textbf{Tutorial 1}, the output of \texttt{u()} should have a component \texttt{E} holding a pseudo energy for the parameter snapshot \texttt{K}, and a component \texttt{Q} that can be used for plotting the optimisation process. In this case, \texttt{E} will be equal to the value of $AIC$ (implemented using the built in \texttt{AIC()} function in R) and \texttt{Q} will be equal to the RMSD between the predicted values of $y$ from the fitted model and the actual $y$ values, used for plotting purpose. Consequently, \texttt{u()} will need access to the variable $y$. The definition of \texttt{u()} is below:
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 u <- function(O, DATA){
@@ -683,7 +736,7 @@ u <- function(O, DATA){
 }
 ```
 
-Finally, we need to define the rule function $r$. We will adopt the following simply procedure: randomly select an entry in $K$ and switch its value to the other binary value.
+Finally, we need to define the rule function \texttt{r()}. We will adopt the following simple procedure: randomly select an equation entry from \texttt{K} and switch its value to the other binary value (on to off, or off to on).
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 r <- function(K){
@@ -701,7 +754,7 @@ r <- function(K){
 ```
 Having defined all the necessary inputs, we are now ready to call Optimus.
 
-An important remark is that modelling this problem in this manner results in an objective function ($AIC$) that is not smooth because small changes in the parameter set $K$ (as defined by $r()$) can produce significantly large changes in the objective value because an entirely different model is being used to fit the data. Despite this, we will see that Optimus arrives at good solutions largely as a consequence of its adaptive thermoregulation. Whereas other optimisation procedures don't work or do poorly in such situations (non smooth objective function), Optimus will get the job done.
+An important remark is that modelling this problem in this manner results in an objective function ($AIC$) that is not smooth because small changes in the parameter set \texttt{K} (as defined by \texttt{r()}) can produce significantly large changes in the objective value. The equation, i.e. the system itself, changes from one step to another. Therefore, an entirely different model is being used to fit the data at each step. Optimisation procedures in such cases are in danger to be trapped in certain minima due to a major change in pseudo temperatures necessary to overcome barriers while the system abruptly evolves. Despite this, we will see that Optimus will get the job done by arriving at good solutions largely as a consequence of its adaptive thermoregulation and acceptance-ratio-guided optimisation procedure.
 
 ## Acceptance Ratio Annealing Optimus Run
 
