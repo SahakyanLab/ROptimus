@@ -1,13 +1,12 @@
 ################################################################################
 #                                                                              #
-#        Interface supporting Monte Carlo Optimisation with Simulated          #
-#        Annealing and Replica Exchange Acceptance Ratio Monte Carlo           #
-#        Optimisation                                                          #
+#         Acceptance Ratio Simulated Annealing and Acceptance Ratio            #
+#            Replica Exchange Monte Carlo Optimisation Engine                  #
 #                                                                              #
 ################################################################################
 
-#' Interface for Acceptance Ratio Annealing Monte Carlo Optimisation
-#' and Replica Exchange Acceptance Ratio Monte Carlo Optimisation.
+#' Acceptance Ratio Simulated Annealing and Acceptance Ratio
+#' Replica Exchange Monte Carlo Optimisation Engine.
 #'
 #' @param NUMITER       Number of model optimisation steps.
 #' @param STATWINDOW    Number of last ongoing iterations to calculate
@@ -98,7 +97,7 @@ Optimus <- function(NUMITER       = 1000000,
                     DIR           = './',
                     starcore      = NULL
                     ){
-  #-- Call Simulated Annealing Optimus
+  #-- Call Acceptance Ratio Simulated Annealing mode of Optimus
   if(OPT.TYPE == "SA"){
     OptimusSA(NUMITER       = NUMITER,
               STATWINDOW    = STATWINDOW,
@@ -129,7 +128,7 @@ Optimus <- function(NUMITER       = 1000000,
               starcore      = starcore
               )
   } else {
-    #-- Call Replica Exchange Optimus
+    #-- Call Acceptance Ratio Replica Exchange mode of Optimus
     if(OPT.TYPE == "RE")
       OptimusRE(NUMITER       = NUMITER,
                 STATWINDOW    = STATWINDOW,
@@ -159,6 +158,6 @@ Optimus <- function(NUMITER       = 1000000,
                 )
     else
       #-- If OPT.TYPE is neither "SA" nor "RE"
-      print(paste(OPT.TYPE," is not a recognized optimisation protocol.", sep = ""))
+      print(paste0(OPT.TYPE," is not a recognized optimisation protocol."), quote=FALSE)
   }
 }

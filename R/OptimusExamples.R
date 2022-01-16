@@ -68,7 +68,7 @@ r <- function(K){
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if(method=='RE'){
       call = 
-'Optimus(NCPU=12, OPTNAME="poly_12_RE", LONG=FALSE
+'Optimus(NCPU=12, OPTNAME="poly_12_RE", LONG=FALSE,
         OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
@@ -224,7 +224,7 @@ m <- function(K,
               clean = TRUE){
   # mopac.cmd="~/Downloads/MOPAC2016_for_Macintosh/MOPAC2016.exe"
   # m(K=c(PHI=90.0, PSI=90.0), notconvergedE = -100.00,
-  #   mopac.cmd="/home/alex/prog/mopac2016/MOPAC2016.exe", clean=TRUE)
+  #   mopac.cmd="/home/group/prog/mopac2016/MOPAC2016.exe", clean=TRUE)
   
   
   # MOPAC semiempirical QM input file preparation, with given PHI and PSI
@@ -318,10 +318,14 @@ r <- function(K){
 ')
     if (method=='SA') {
       call <- 
-      'Optimus(NCPU = 4, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, OPT.TYPE = "SA", OPTNAME = "vitamin_4_SA", NUMITER = 1e+05, CYCLES = 2, DUMP.FREQ = 50000, LONG = FALSE)'
+      'Optimus(NCPU=4, OPTNAME="vitamin_4_SA", NUMITER=1e+05, CYCLES=2, DUMP.FREQ=50000, LONG=FALSE,
+              OPT.TYPE="SA",
+              K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=NULL)'
     } else if (method=='RE') {
       call <- 
-      'Optimus(NCPU = 12, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, ACCRATIO = c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2), OPT.TYPE = "RE", OPTNAME = "vitamin_12_RE", NUMITER = 1e+05, EXCHANGE.FREQ = 500, STATWINDOW = 50, DUMP.FREQ = 50000, LONG = FALSE)'
+      'Optimus(NCPU=12, OPTNAME="vitamin_12_RE", NUMITER=1e+05, EXCHANGE.FREQ=500, STATWINDOW=50, DUMP.FREQ=50000, LONG=FALSE,
+              OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
+              K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=NULL)'
     }
     
   } else if (example==4) {
@@ -359,7 +363,7 @@ m <- function(K, DATA){
   state <- DATA$state
   model <- DATA$model
   
-  span = 10.0
+  span <- 10.0
   
   times <- c(0, span)
   O   <- ode(y=state, times=times, func=model, parms=K)[2,2:(length(state)+1)]
@@ -396,15 +400,19 @@ r <- function(K){
 }
 ################################################################################
 '
-    if (method=='SA') {
+    if (method=='SA'){
       call <- 
-      'Optimus(NCPU = 4, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, OPT.TYPE = "SA", OPTNAME = "DE_4_SA", DATA = DATA, NUMITER = 200000, CYCLES = 2, DUMP.FREQ = 100000, LONG = FALSE)'
-    } else if (method=='RE') {
+      'Optimus(NCPU=4, OPTNAME="DE_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
+              OPT.TYPE="SA",
+              K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
+    } else if (method=='RE'){
       call <- 
-        'Optimus(NCPU = 12, K.INITIAL = K, rDEF = r, mDEF = m, uDEF = u, ACCRATIO = c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2), OPT.TYPE = "RE", DATA = DATA, OPTNAME = "DE_12_RE", NUMITER = 200000, STATWINDOW = 50, DUMP.FREQ = 100000, LONG = FALSE)'
+        'Optimus(NCPU=12, OPTNAME="DE_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
+                OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
+                K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
     
-  } else if (example==5) {
+  } else if (example==5){
     text <- '
 library(Optimus)
 out.dir <- getwd()

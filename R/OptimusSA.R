@@ -1,10 +1,10 @@
 ################################################################################
 #                                                                              #
-#        Monte Carlo optimiser with Acceptance Ratio Annealing                 #
-#        Featuring:                                                            #
-#        * an automatic adaptive pseudo-temperature bath control,              #
-#        * memory friendly processing capability,                              #
-#        * progress visualisation,                                             #
+#      Monte Carlo optimiser with Acceptance Ratio Simulated Annealing         #
+#        featuring:                                                            #
+#        * an automatic adaptive pseudo-temperature bath control;              #
+#        * memory friendly processing capability;                              #
+#        * progress visualisation;                                             #
 #        * multi-core = multi-replica optimisation.                            #
 #                                                                              #
 #*******************************************************************************

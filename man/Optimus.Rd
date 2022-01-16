@@ -2,8 +2,7 @@
 % Please edit documentation in R/Optimus.R
 \name{Optimus}
 \alias{Optimus}
-\title{Acceptance Ratio Annealing Monte Carlo Optimisation
-and Replica Exchange Parallel Acceptance Ratio Monte Carlo Optimisation.}
+\title{Acceptance Ratio Simulated Annealing and Acceptance Ratio Replica Exchange Monte Carlo Optimisation Engine.}
 \usage{
 Optimus(
   NUMITER = 1e+06,
@@ -124,6 +123,5 @@ Exchange (default value is "SA")}
 A probabilistic optimal parameter configuration K.
 }
 \description{
-Acceptance Ratio Annealing Monte Carlo Optimisation
-and Replica Exchange Parallel Acceptance Ratio Monte Carlo Optimisation.
+Acceptance Ratio Simulated Annealing and Acceptance Ratio Replica Exchange Monte Carlo Optimisation Engine.
 }

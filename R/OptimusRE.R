@@ -1,10 +1,10 @@
 ################################################################################
 #                                                                              #
-#        Replica Exchange Acceptance Ratio Monte Carlo optimiser               #
-#        Featuring:                                                            #
-#        * an automatic adaptive pseudo-temperature bath control,              #
-#        * memory friendly processing capability,                              #
-#        * progress visualisation,                                             #
+#        Acceptance Ratio Replica Exchange Monte Carlo optimiser               #
+#        featuring:                                                            #
+#        * an automatic adaptive pseudo-temperature bath control;              #
+#        * memory friendly processing capability;                              #
+#        * progress visualisation.                                             #
 #                                                                              #
 #*******************************************************************************
 #-- NUMITER        = 1000000 # Number of model optimisation steps.
