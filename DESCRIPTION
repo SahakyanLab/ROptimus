@@ -16,7 +16,7 @@ Description: This package is a general purpose optimisation engine.
     the observed acceptance ratio is kept near to the desired (fixed
     or changing) acceptance ratio.
 License: GPL-3
-URL: http://optimus.atgcdynamics.org, http://github.com/SahakyanLab/Optimus
+URL: http://github.com/SahakyanLab/Optimus
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.1.0)

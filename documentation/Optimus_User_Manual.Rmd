@@ -1,6 +1,6 @@
 ---
 title: "**Optimus User Manual**"
-date: "16 January 2021"
+date: "18 January 2021"
 output: pdf_document
 references:
 - id: Raue2013
@@ -255,16 +255,16 @@ Optimus modifies the Monte Carlo analogue of the replica exchange approach to ap
 
 The usage of Optimus should be accompanied with the following citations:
 
+* Nicholas A.G. Johnson, Liezel Tamon, Xin Liu and Aleksandr B. Sahakyan, *Optimus: a general purpose adaptive optimisation engine in R*, *bioRxiv*, this deposition, **2022**.
+
 * Nicholas A.G. Johnson, Liezel Tamon, Xin Liu and Aleksandr B. Sahakyan, http://github.com/SahakyanLab/Optimus, **2018**.
- 
-* Nicholas A.G. Johnson, Liezel Tamon, Xin Liu and Aleksandr B. Sahakyan, *General purpose adaptive optimisation engine in R*, *bioRxiv*, this deposition, **2022**.
 
 # Installation Instructions
 
 Installing Optimus locally for immediate use requires only R and a connection to the Internet. After opening an R client, execute the commands below to install Optimus. Note, that the latest version of Rtools is required for this installation to work. If it is not available locally and the installation is attempted from within RStudio, a prompt will appear to download and install Rtools. After following those instructions, restart the RStudio session before reattempting the Optimus installation.
 
 ```{r, tidy=FALSE, echo=TRUE, eval=FALSE}
-install.packaes("devtools")           # install devtools
+install.packages("devtools")           # install devtools
 library(devtools)                     # load devtools
 install_github("SahakyanLab/Optimus") # install Optimus
 library(Optimus)                      # load Optimus
@@ -398,7 +398,8 @@ r <- function(K){
   
   # Creating a potentially new set of coefficients where one entry is altered
   # by either +move.step or -move.step, also randomly selected:
-  K.new[K.ind.toalter] <- K.new[K.ind.toalter] + sample(size=1, x=c(-move.step, move.step))
+  K.new[K.ind.toalter] <- K.new[K.ind.toalter] +
+                                      sample(size=1, x=c(-move.step, move.step))
 
   return(K.new)
 }
@@ -580,7 +581,7 @@ kable(data, caption = "Summary of solutions.")
 
 Consider again the synthetic data that was created in **Tutorial 1**. Suppose that we were only provided with the data and, unlike in **Tutorial 1**, had no knowledge of the best terms to be included in a functional representation of said data. In this example, we shall use Optimus to determine which terms should be used in a least squares fitting of the data to achieve a representation with low RMSD while avoiding overfitting the data with too complicated equation.
 
-Let us start by generating the same data which was used in Tutorial 1:
+Let us start by generating the same data which was used in **Tutorial 1**:
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 set.seed(845)
@@ -769,7 +770,8 @@ Let us again investigate the Simulated Annealing (SA) version of Optimus on 4 pr
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
 Optimus(NCPU=4,
-        OPT.TYPE="SA", OPTNAME="term_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
+        OPT.TYPE="SA", OPTNAME="term_4_SA",
+        NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)
 ```
 
@@ -849,7 +851,8 @@ As in the Acceptance Ratio Simulated Annealing run above, we will again execute 
 Here we will set the input parameter \texttt{STATWINDOW} to have value $50$ (its default value is $70$). This signifies that the TCU will update the system pseudo temperature once every $50$ iterations on each optimisation replica. This guarantees that $4$ temperature adjustments will be made if a given replica is involved in two subsequent exchanges (because the number of iterations between exchanges is $200$, as explained in the preceding paragraph) as opposed to merely $2$ adjustments which would be the case if \texttt{STATWINDOW} were left to take its default value and could result in poor agreement between the observed acceptance ratio of the replica in question and the target acceptance ratio. The following line executes Optimus with the above specified inputs:
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
-Optimus(NCPU=12, OPTNAME="term_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
+Optimus(NCPU=12, OPTNAME="term_12_RE",
+        NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
         OPT.TYPE="RE", ACCRATIO=ACCRATIO,
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)
 ```
@@ -1116,7 +1119,8 @@ We will assume that the above listed conformations comprehensively represent mos
 For the Acceptance Ratio Annealing run, we will set \texttt{NUMITER} to 100 000 because each optimsation step is more costly due to the relatively computationally expensive calls to MOPAC. Moreover, we will set \texttt{CYCLES} to $2$. Although this shortens the length of an annealing cycle to 50 000 steps (whereas 100 000 steps per cycle has been kept constant over the previous tutorials), having more than $1$ annealing cycle is likely more beneficial than insisting on a cycle lasting 100 000 steps as opposed to 50 000.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
-Optimus(NCPU=4, OPTNAME="vitamin_4_SA", NUMITER=100000, CYCLES=2, DUMP.FREQ=50000, LONG=FALSE,
+Optimus(NCPU=4, OPTNAME="vitamin_4_SA",
+        NUMITER=100000, CYCLES=2, DUMP.FREQ=50000, LONG=FALSE,
         OPT.TYPE="SA",
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=NULL)
 ```
@@ -1181,7 +1185,8 @@ ACCRATIO <- c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
 Just as in the Acceptance Ratio Simulated Annealing run, we will set \texttt{NUMITER} to 100 000. Furthermore, we will set \texttt{EXCHANGE.FREQ} to $500$ such that the number of iterations between subsequent exchanges between replicas is $200$ as it was in **Tutorial 2**. For the same reasons as in **Tutorial 2**, we will set \texttt{STATWINDOW} to 50 for the Replica Exchange run.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
-Optimus(NCPU=12, OPTNAME="vitamin_12_RE", NUMITER=100000, EXCHANGE.FREQ=500, STATWINDOW=50, DUMP.FREQ=50000, LONG=FALSE,
+Optimus(NCPU=12, OPTNAME="vitamin_12_RE",
+        NUMITER=100000, EXCHANGE.FREQ=500, STATWINDOW=50, DUMP.FREQ=50000, LONG=FALSE,
         OPT.TYPE="RE", ACCRATIO=ACCRATIO,
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=NULL)
 ```
@@ -1484,7 +1489,8 @@ kable(data, caption = "System summary for k1 = 1.5, k2 = 0.5, k3 = k4 = 1.0.")
 We will now call Acceptance Ratio Simulated Annealing Optimus to solve our problem. Similarly to **Tutorial 2**, we will execute 200 000 optimisation iterations and perform $2$ annealing cycles. We will set \texttt{DUMP.FREQ} to have a value of 100 000.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
-Optimus(NCPU=4, OPTNAME="DE_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
+Optimus(NCPU=4, OPTNAME="DE_4_SA",
+        NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
         OPT.TYPE="SA",
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)
 ```
@@ -1549,7 +1555,8 @@ Let us now examine how replica exchange Optimus using 12 cores performs on this 
 ACCRATIO <- c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
 ```
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
-Optimus(NCPU=12, OPTNAME="DE_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
+Optimus(NCPU=12, OPTNAME="DE_12_RE",
+        NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
         OPT.TYPE="RE", ACCRATIO=ACCRATIO,
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)
 ```
@@ -1741,7 +1748,8 @@ r <- function(K){
 We first use the Acceptance Ratio Simulated Annealing scheme in Optimus to solve the problem. As in **Tutorials 2** and **4**, Optimus is set to do 200 000 steps, 2 annealing cycles, and is to produce 4 independent replicas of the same simulation.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
-Optimus(NCPU=4, OPTNAME="IJ.NEW.OPTI.SA", NUMITER=2e+05, CYCLES=2, DUMP.FREQ=1e+05, LONG=FALSE,
+Optimus(NCPU=4, OPTNAME="IJ.NEW.OPTI.SA",
+        NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
         OPT.TYPE="SA", 
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)
 ```
@@ -1762,7 +1770,8 @@ Now, we can use the Acceptance Ratio Replica Exchange mode of Optimus using 12 c
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
 ACCRATIO <- c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
 
-Optimus(NCPU=12, OPTNAME="IJ.NEW.OPTI.RE", NUMITER=2e+05, DUMP.FREQ=1e+05, LONG=FALSE,
+Optimus(NCPU=12, OPTNAME="IJ.NEW.OPTI.RE",
+        NUMITER=200000, DUMP.FREQ=100000, LONG=FALSE,
         OPT.TYPE="RE", ACCRATIO=ACCRATIO,
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)
 ```
