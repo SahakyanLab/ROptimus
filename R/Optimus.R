@@ -49,11 +49,11 @@
 #'                      optimized (K) and returns an observable object O.
 #' @param uDEF          Function that evaluates the performance of a given set
 #'                      of parameters K.
-#' @param EXCHANGE.FREQ Frequency of exchanges in steps (NUMITER should be
-#'                      divisable by this number, for RE Optimus).
+#' @param EXCHANGE.FREQ Frequency of exchanges (NUMITER should be divisible by
+#'                      this number, for RE Optimus).
 #' @param ACCRATIO      Vector of Acceptance Ratios for each replica (length of
 #'                      ACCRATIO must be equal to NCPU, for RE Optimus).
-#' @param CYCLES        Number of annealing cycles (NUMITER should be divisable
+#' @param CYCLES        Number of annealing cycles (NUMITER should be divisible
 #'                      by this number, for SA Optimus).
 #' @param ACCRATIO.IN   Initial acceptance ratio (%) at the beginning of each
 #'                      constituent annealing cycles (for SA Optimus).

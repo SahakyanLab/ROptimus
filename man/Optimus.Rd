@@ -100,13 +100,13 @@ optimized (K) and returns an observable object O.}
 \item{uDEF}{Function that evaluates the performance of a given set
 of parameters K.}
 
-\item{EXCHANGE.FREQ}{Frequency of exchanges in steps (NUMITER should be
-divisable by this number, for RE Optimus).}
+\item{EXCHANGE.FREQ}{Frequency of exchanges (NUMITER should be
+divisible by this number, for RE Optimus).}
 
 \item{ACCRATIO}{Vector of Acceptance Ratios for each replica (length of
 ACCRATIO must be equal to NCPU, for RE Optimus).}
 
-\item{CYCLES}{Number of annealing cycles (NUMITER should be divisable
+\item{CYCLES}{Number of annealing cycles (NUMITER should be divisible
 by this number, for SA Optimus).}
 
 \item{ACCRATIO.IN}{Initial acceptance ratio (%) at the beginning of each

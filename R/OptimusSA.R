@@ -10,7 +10,7 @@
 #*******************************************************************************
 #-- NUMITER = 1000000        # Number of model optimisation steps.
 #-- CYCLES  = 10             # Number of annealing cycles (NUMITER should be
-#                              divisable by this number).
+#                              divisible by this number).
 #*******************************************************************************
 #-- ACCRATIO.IN  = 90        # Initial acceptance ratio (%) at the beginning of
 #                              each constituent annealing cycles.

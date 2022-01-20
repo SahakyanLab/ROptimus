@@ -8,8 +8,8 @@
 #                                                                              #
 #*******************************************************************************
 #-- NUMITER        = 1000000 # Number of model optimisation steps.
-#-- EXCHANGE.FREQ  = 1000    # Frequency of exchanges in steps (NUMITER should
-#                              be divisable by this number).
+#-- EXCHANGE.FREQ  = 1000    # Frequency of exchanges (NUMITER should be 
+#                              divisible by this number).
 #*******************************************************************************
 #-- ACCRATIO   = c(90, 50, 5, 1)  # Vector of Acceptance Ratios for each
 #                                   replica (length of ACCRATIO must be equal to
@@ -101,7 +101,7 @@ OptimusRE <- function(NUMITER       = 1000000,
 
   #-- Check that at least 2 processors are available
   if(!(NCPU > 1))
-    stop("Replica Exchange requires at least 2 processors, ideally 4 or more.")
+    stop("Replica Exchange requires at least 2 processors, ideally 8 or more.")
   #-- Check that the number of processors matches the number of acceptance ratios
   if(length(ACCRATIO)!= NCPU)
     stop("The number of processors must match the length of the acceptance ratio vector")
@@ -190,7 +190,7 @@ OptimusRE <- function(NUMITER       = 1000000,
   for(EXCHANGE in 1:EXCHANGE.FREQ){
 
     #-- PARALLEL PROCESSING WRAP # # # # # # # # #
-    suppressWarnings(result <- foreach(repl=1:NCPU, .inorder=FALSE, .export = ls(environment())) %op% {
+    suppressWarnings(result <- foreach(repl=1:NCPU, .inorder=TRUE, .export=ls(environment())) %op% {
 
       e_new <- new.env()
 
@@ -234,7 +234,7 @@ OptimusRE <- function(NUMITER       = 1000000,
       for(INT in 1:(NUMITER/EXCHANGE.FREQ)){
 
         #-- update the STEP parameter (for indexing)
-        STEP <- EXCHANGE * (NUMITER/EXCHANGE.FREQ) + INT
+        STEP <- (EXCHANGE-1) * (NUMITER/EXCHANGE.FREQ) + INT
 
         K.new <- r(K=K)
         if (is.null(DATA)) {
@@ -369,7 +369,7 @@ OptimusRE <- function(NUMITER       = 1000000,
         }
         #^^ # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-      } ##-- for(EXCHANGE in 1:EXCHANGE.FREQ)
+      } ##-- for(INT in 1:(NUMITER/EXCHANGE.FREQ)) 
       #^^ Execute MC iterations until next exchange occurs  # # # # # # # # # # #
 
       #-- if LONG==TRUE, OUTPUT will only hold the trimmed data!
@@ -465,18 +465,21 @@ OptimusRE <- function(NUMITER       = 1000000,
     temp$K        <- configs[[index1]]
     temp$E.stored <- E.stored.vec[index1]
     temp$K.stored <- K.stored.vec[[index1]]
+    temp$O.stored <- O.stored.vec[[index1]]
 
     E.old.vec[index1]      <- E.old.vec[index2]
     Q.old.vec[index1]      <- Q.old.vec[index2]
     configs[[index1]]      <- configs[[index2]]
     E.stored.vec[index1]   <- E.stored.vec[index2]
     K.stored.vec[[index1]] <- K.stored.vec[[index2]]
+    O.stored.vec[[index1]] <- O.stored.vec[[index2]] 
 
     E.old.vec[index2]      <- temp$E.old
     Q.old.vec[index2]      <- temp$Q.old
     configs[[index2]]      <- temp$K
     E.stored.vec[index2]   <- temp$E.stored
     K.stored.vec[[index2]] <- temp$K.stored
+    O.stored.vec[[index2]] <- temp$O.stored
     #####
 
     #-- Reset the corresponding temp control unit values
@@ -494,7 +497,7 @@ OptimusRE <- function(NUMITER       = 1000000,
     new.T.INI.cache[index2]          <- T.INI
     instanceOFswitch.cache[index2]   <- 0
     #####
-  }
+  } ##-- for(EXCHANGE in 1:EXCHANGE.FREQ)
   print("An optimal model is obtained and the data are saved !!!", quote=FALSE)
   if(NCPU==1){ return(OUTPUT) } else { return(0) }
 
