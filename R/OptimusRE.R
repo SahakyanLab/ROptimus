@@ -113,7 +113,7 @@ OptimusRE <- function(NUMITER       = 1000000,
   suppressWarnings(requireNamespace("doParallel"))
   registerDoParallel(cores = NCPU)
   `%op%` <- `%dopar%`
-  print(paste("Running ", NCPU, " replicas.", sep=""), quote=F)
+  print(paste("Running ", NCPU, " replicas.", sep=""), quote=FALSE)
 
   seeds <- floor(runif(n=NCPU, min=1, max=1000))
 
@@ -272,7 +272,7 @@ OptimusRE <- function(NUMITER       = 1000000,
             DUMP.MODEL[5]  <- "TERMS:"
             DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
             DUMP.MODEL[7]  <- "COEFFICIENTS:"
-            DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=F, trim=T), collapse=" ")
+            DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=FALSE, trim=TRUE), collapse=" ")
             DUMP.MODEL[9]  <- paste("Step stored: ", Step.stored, sep="")
             #        DUMP.MODEL[9]  <- "OBSERVABLES:"
             #        DUMP.MODEL[10] <- paste(as.character(names(O.stored)), collapse=" ")
