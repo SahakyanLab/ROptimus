@@ -190,7 +190,7 @@ OptimusRE <- function(NUMITER       = 1000000,
   for(EXCHANGE in 1:EXCHANGE.FREQ){
 
     #-- PARALLEL PROCESSING WRAP # # # # # # # # #
-    suppressWarnings(result <- foreach(repl=1:NCPU, .inorder=TRUE, .export=ls(environment())) %op% {
+    suppressWarnings(result <- foreach(repl=1:NCPU, .inorder=FALSE, .export=ls(environment())) %op% {
 
       e_new <- new.env()
 
@@ -376,7 +376,7 @@ OptimusRE <- function(NUMITER       = 1000000,
 
       #-- if LONG==TRUE, OUTPUT will only hold the trimmed data!
       OUTPUT                       <- NULL
-
+      OUTPUT$repl                  <- repl
       OUTPUT$E.stored              <- E.stored
       OUTPUT$E.old                 <- E.old
       OUTPUT$Q.old                 <- Q.old
@@ -412,6 +412,9 @@ OptimusRE <- function(NUMITER       = 1000000,
       OUTPUT
     })
     #^^ PARALLEL PROCESSING WRAP # # # # # # # # #
+    
+    repl.order <- sapply(X=1:NCPU, simplify=TRUE, FUN=function(i) result[[i]]$repl)
+    result <- result[order(repl.order, decreasing=FALSE)]
 
     #-- Store the output from parallel workers in the respective caches
     for(i in 1:NCPU){
