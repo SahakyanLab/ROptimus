@@ -273,8 +273,9 @@ OptimusRE <- function(NUMITER       = 1000000,
             DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
             DUMP.MODEL[7]  <- "COEFFICIENTS:"
             DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=F, trim=T), collapse=" ")
+            DUMP.MODEL[9]  <- paste("Step stored: ", Step.stored, sep="")
             #        DUMP.MODEL[9]  <- "OBSERVABLES:"
-            #        DUMP.MODEL[10]  <- paste(as.character(names(O.stored)), collapse=" ")
+            #        DUMP.MODEL[10] <- paste(as.character(names(O.stored)), collapse=" ")
             #        DUMP.MODEL[11] <- "PREDICTIONS:"
             #        DUMP.MODEL[12] <- paste(format(as.vector(O.stored), scientific=F, trim=T), collapse=" ")
             #        DUMP.MODEL[13] <- "TARGET:"
@@ -348,6 +349,7 @@ OptimusRE <- function(NUMITER       = 1000000,
           write(DUMP.MODEL, file=paste0(DIR,'/',OPTNAME,repl,"_model_QE.log",sep=""))
           save(K.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_K.Rdata",sep=""))
           save(O.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_O.Rdata",sep=""))
+          save(E.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_E.Rdata",sep=""))
         }
 
         STEP.add <- STEP.add + 1    ########
@@ -463,23 +465,14 @@ OptimusRE <- function(NUMITER       = 1000000,
     temp$E.old    <- E.old.vec[index1]
     temp$Q.old    <- Q.old.vec[index1]
     temp$K        <- configs[[index1]]
-    temp$E.stored <- E.stored.vec[index1]
-    temp$K.stored <- K.stored.vec[[index1]]
-    temp$O.stored <- O.stored.vec[[index1]]
-
+   
     E.old.vec[index1]      <- E.old.vec[index2]
     Q.old.vec[index1]      <- Q.old.vec[index2]
     configs[[index1]]      <- configs[[index2]]
-    E.stored.vec[index1]   <- E.stored.vec[index2]
-    K.stored.vec[[index1]] <- K.stored.vec[[index2]]
-    O.stored.vec[[index1]] <- O.stored.vec[[index2]] 
 
     E.old.vec[index2]      <- temp$E.old
     Q.old.vec[index2]      <- temp$Q.old
     configs[[index2]]      <- temp$K
-    E.stored.vec[index2]   <- temp$E.stored
-    K.stored.vec[[index2]] <- temp$K.stored
-    O.stored.vec[[index2]] <- temp$O.stored
     #####
 
     #-- Reset the corresponding temp control unit values
