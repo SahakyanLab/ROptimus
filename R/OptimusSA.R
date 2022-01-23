@@ -112,7 +112,7 @@ OptimusSA <- function(NUMITER       = 1000000,
     suppressWarnings(requireNamespace("doParallel"))
     registerDoParallel(cores = NCPU)
     `%op%` <- `%dopar%`
-    print(paste("Running ", NCPU, " replicas of optimisation.", sep=""), quote=F)
+    print(paste0("Running ", NCPU, " replicas of optimisation."), quote=FALSE)
   } else {
     `%op%` <- `%do%`
   }
@@ -197,7 +197,7 @@ OptimusSA <- function(NUMITER       = 1000000,
     for(STEP in 1:NUMITER){  #-- step of the trial, from 1 to NUMITER
 
       if(STEP%%1000==0){
-        print(paste("Step ",STEP," out of ",NUMITER,sep=""), quote=FALSE)
+        print(paste0("Step ",STEP," out of ",NUMITER), quote=FALSE)
       }
 
       K.new <- r(K=K)
@@ -229,7 +229,7 @@ OptimusSA <- function(NUMITER       = 1000000,
         if (!is.null(starcore)) {
           MAXCOEFORDER <- starcore['MAXCOEFORDER']
           N.terms.old  <- length(O$coefficients)
-          highest.coef <- unlist(strsplit( format( max( abs(O$coefficients),na.rm=T ), scientific=F,trim=T) ,"")) ##-- 16Jan13 --## removes sci notation and spaces for extremely large coefficients (the absence of this never caused a problem for backbone and methyls), now also abs() is added and NAs are removed while accounting the order of coefficients!
+          highest.coef <- unlist(strsplit( format( max( abs(O$coefficients),na.rm=TRUE ), scientific=FALSE,trim=TRUE) ,"")) ##-- 16Jan13 --## removes sci notation and spaces for extremely large coefficients (the absence of this never caused a problem for backbone and methyls), now also abs() is added and NAs are removed while accounting the order of coefficients!
           dot.ind      <- which(highest.coef==".")
           if(length(dot.ind)!=0){ Highest.order.coef.old <- dot.ind-1 } else { Highest.order.coef.old <- length(highest.coef) }
           token <- (Highest.order.coef.old <= MAXCOEFORDER)
@@ -243,15 +243,15 @@ OptimusSA <- function(NUMITER       = 1000000,
           O.stored       <- O
           DUMP.MODEL     <- NULL
           DUMP.MODEL[1]  <- "QUALITY:"
-          DUMP.MODEL[2]  <- paste("E: ",round(E.old,3),sep="")
-          DUMP.MODEL[3]  <- paste("Q: ",round(Q.old,3),sep="")
+          DUMP.MODEL[2]  <- paste0("E: ",round(E.old,3))
+          DUMP.MODEL[3]  <- paste0("Q: ",round(Q.old,3))
           if (!is.null(starcore)) {
-            DUMP.MODEL[4]  <- paste("N of coef.: ",round(N.terms.old,3),sep="")
-            DUMP.MODEL[5]  <- paste("Order of largest coef.: ",Highest.order.coef.old,sep="")
+            DUMP.MODEL[4]  <- paste0("N of coef.: ",round(N.terms.old,3))
+            DUMP.MODEL[5]  <- paste0("Order of largest coef.: ",Highest.order.coef.old)
             DUMP.MODEL[6]  <- "TERMS:"
             DUMP.MODEL[7]  <- paste(as.character(names(O$coefficients)), collapse=" ")
             DUMP.MODEL[8]  <- "COEFFICIENTS:"
-            DUMP.MODEL[9]  <- paste(format(as.vector(O$coefficients), scientific=F, trim=T), collapse=" ") ##-- 16Jan --## removes sci notation, keeping NA
+            DUMP.MODEL[9]  <- paste(format(as.vector(O$coefficients), scientific=FALSE, trim=TRUE), collapse=" ") ##-- 16Jan --## removes sci notation, keeping NA
             DUMP.MODEL[10] <- "################################"
           }
           # DUMP.MODEL[4]  <- "TERMS:"
@@ -302,7 +302,7 @@ OptimusSA <- function(NUMITER       = 1000000,
       if(LIVEPLOT==TRUE){
         if(STEP%%LIVEPLOT.FREQ == 0){
 
-          pdf(width=PDFwidth, height=PDFheight, file=paste0(DIR,'/',OPTNAME,repl,".pdf",sep=""))
+          pdf(width=PDFwidth, height=PDFheight, file=paste0(DIR,'/',OPTNAME,repl,".pdf"))
           par(mfrow=c(5,1))
 
           plot(y=PROB.VEC, x=STEP.STORED, ylab="Acceptance P", xlab="Step",
@@ -346,9 +346,9 @@ OptimusSA <- function(NUMITER       = 1000000,
 
 
       if( STEP%%DUMP.FREQ == 0 & exists("DUMP.MODEL") ){
-        write(DUMP.MODEL, file=paste0(DIR,'/',OPTNAME,repl,"_model_QE.log",sep=""))
-        save(K.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_K.Rdata",sep=""))
-        save(O.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_O.Rdata",sep=""))
+        write(DUMP.MODEL, file=paste0(DIR,'/',OPTNAME,repl,"_model_QE.log"))
+        save(K.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_K.Rdata"))
+        save(O.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_O.Rdata"))
       }
 
       STEP.add <- STEP.add + 1    ########

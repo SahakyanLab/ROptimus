@@ -113,7 +113,7 @@ OptimusRE <- function(NUMITER       = 1000000,
   suppressWarnings(requireNamespace("doParallel"))
   registerDoParallel(cores = NCPU)
   `%op%` <- `%dopar%`
-  print(paste("Running ", NCPU, " replicas.", sep=""), quote=FALSE)
+  print(paste0("Running ", NCPU, " replicas."), quote=FALSE)
 
   seeds <- floor(runif(n=NCPU, min=1, max=1000))
 
@@ -266,14 +266,14 @@ OptimusRE <- function(NUMITER       = 1000000,
             O.stored       <- O
             DUMP.MODEL     <- NULL
             DUMP.MODEL[1]  <- "QUALITY:"
-            DUMP.MODEL[2]  <- paste("E: ",round(E.old,3),sep="")
-            DUMP.MODEL[3]  <- paste("Q: ",round(Q.old,3),sep="")
-            DUMP.MODEL[4]  <- paste("Acceptance Ratio: ", IDEAL.ACC.VEC[repl], sep="")
+            DUMP.MODEL[2]  <- paste0("E: ",round(E.old,3))
+            DUMP.MODEL[3]  <- paste0("Q: ",round(Q.old,3))
+            DUMP.MODEL[4]  <- paste0("Acceptance Ratio: ", IDEAL.ACC.VEC[repl])
             DUMP.MODEL[5]  <- "TERMS:"
             DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
             DUMP.MODEL[7]  <- "COEFFICIENTS:"
             DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=FALSE, trim=TRUE), collapse=" ")
-            DUMP.MODEL[9]  <- paste("Step stored: ", Step.stored, sep="")
+            DUMP.MODEL[9]  <- paste0("Step stored: ", Step.stored)
             #        DUMP.MODEL[9]  <- "OBSERVABLES:"
             #        DUMP.MODEL[10] <- paste(as.character(names(O.stored)), collapse=" ")
             #        DUMP.MODEL[11] <- "PREDICTIONS:"
@@ -309,7 +309,7 @@ OptimusRE <- function(NUMITER       = 1000000,
         if(LIVEPLOT==TRUE){
           if(STEP%%LIVEPLOT.FREQ == 0){
 
-            pdf(width=PDFwidth, height=PDFheight, file=paste0(DIR,'/',OPTNAME,repl,".pdf",sep=""))
+            pdf(width=PDFwidth, height=PDFheight, file=paste0(DIR,'/',OPTNAME,repl,".pdf"))
             par(mfrow=c(5,1))
 
             plot(y=PROB.VEC, x=STEP.STORED, ylab="Acceptance P", xlab="Step",
@@ -346,10 +346,11 @@ OptimusRE <- function(NUMITER       = 1000000,
 
 
         if(STEP%%DUMP.FREQ == 0 & exists("DUMP.MODEL") ){
-          write(DUMP.MODEL, file=paste0(DIR,'/',OPTNAME,repl,"_model_QE.log",sep=""))
-          save(K.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_K.Rdata",sep=""))
-          save(O.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_O.Rdata",sep=""))
-          save(E.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_E.Rdata",sep=""))
+          DUMP.MODEL[10]  <- paste0("Step dumped: ", STEP)
+          write(DUMP.MODEL, file=paste0(DIR,'/',OPTNAME,repl,"_model_QE.log"))
+          save(K.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_K.Rdata"))
+          save(O.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_O.Rdata"))
+          save(E.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_E.Rdata"))
         }
 
         STEP.add <- STEP.add + 1    ########
