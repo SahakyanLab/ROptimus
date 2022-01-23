@@ -255,7 +255,7 @@ Optimus modifies the Monte Carlo analogue of the replica exchange approach to ap
 
 The usage of Optimus should be accompanied with the following citations:
 
-* Nicholas A.G. Johnson, Liezel Tamon, Xin Liu and Aleksandr B. Sahakyan, *Optimus: a general purpose adaptive optimisation engine in R*, *bioRxiv*, this deposition, **2022**.
+* Nicholas A.G. Johnson, Liezel Tamon, Xin Liu and Aleksandr B. Sahakyan, *Optimus: a general purpose adaptive optimisation engine in R*, *bioRxiv*, http://doi.org/10.1101/2022.01.18.476810, **2022**.
 
 * Nicholas A.G. Johnson, Liezel Tamon, Xin Liu and Aleksandr B. Sahakyan, http://github.com/SahakyanLab/Optimus, **2018**.
 
