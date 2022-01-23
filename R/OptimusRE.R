@@ -229,6 +229,18 @@ OptimusRE <- function(NUMITER       = 1000000,
       E.stored <- E.stored.vec[repl]
       K.stored <- K.stored.vec[[repl]]
       O.stored <- O.stored.vec[[repl]]
+      
+      # Initialise DUMP.MODEL holding current best solution (stored), which will be updated when
+      # a better solution is found in this exchange
+      DUMP.MODEL     <- NULL
+      DUMP.MODEL[1]  <- "QUALITY:"
+      DUMP.MODEL[2]  <- paste0("E: ",round(E.stored,3))
+      DUMP.MODEL[3]  <- paste0("Step stored: ", Step.stored) 
+      DUMP.MODEL[4]  <- paste0("Acceptance Ratio: ", IDEAL.ACC.VEC[repl])
+      DUMP.MODEL[5]  <- "TERMS:"
+      DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
+      DUMP.MODEL[7]  <- "COEFFICIENTS:"
+      DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=FALSE, trim=TRUE), collapse=" ")
 
       #-- Execute MC iterations until next exchange occurs
       for(INT in 1:(NUMITER/EXCHANGE.FREQ)){
@@ -266,14 +278,13 @@ OptimusRE <- function(NUMITER       = 1000000,
             O.stored       <- O
             DUMP.MODEL     <- NULL
             DUMP.MODEL[1]  <- "QUALITY:"
-            DUMP.MODEL[2]  <- paste0("E: ",round(E.old,3))
-            DUMP.MODEL[3]  <- paste0("Q: ",round(Q.old,3))
+            DUMP.MODEL[2]  <- paste0("E: ",round(E.stored,3))
+            DUMP.MODEL[3]  <- paste0("Step stored: ", Step.stored) 
             DUMP.MODEL[4]  <- paste0("Acceptance Ratio: ", IDEAL.ACC.VEC[repl])
             DUMP.MODEL[5]  <- "TERMS:"
             DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
             DUMP.MODEL[7]  <- "COEFFICIENTS:"
             DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=FALSE, trim=TRUE), collapse=" ")
-            DUMP.MODEL[9]  <- paste0("Step stored: ", Step.stored)
             #        DUMP.MODEL[9]  <- "OBSERVABLES:"
             #        DUMP.MODEL[10] <- paste(as.character(names(O.stored)), collapse=" ")
             #        DUMP.MODEL[11] <- "PREDICTIONS:"
@@ -346,11 +357,10 @@ OptimusRE <- function(NUMITER       = 1000000,
 
 
         if(STEP%%DUMP.FREQ == 0 & exists("DUMP.MODEL") ){
-          DUMP.MODEL[10]  <- paste0("Step dumped: ", STEP)
+          DUMP.MODEL[9] <- paste0("Step dumped: ", STEP)
           write(DUMP.MODEL, file=paste0(DIR,'/',OPTNAME,repl,"_model_QE.log"))
           save(K.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_K.Rdata"))
           save(O.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_O.Rdata"))
-          save(E.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_E.Rdata"))
         }
 
         STEP.add <- STEP.add + 1    ########
