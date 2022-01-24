@@ -420,13 +420,13 @@ r <- function(K){
 
 # User-defined inputs
 
-seed = 840
+seed = 840 # Used for initial shuffling and in Optimus call
 gaplimit = 50  # from 2 Mb/40 kb
 ACCRATIO = c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
 
 # Defining Optimus Inputs
 
-data(IJ.ORIG) 
+data(ij_orig) 
 K <- IJ.ORIG
 set.seed(seed)
 # Shuffle all js once
@@ -470,15 +470,15 @@ r <- function(K){
     if(method=='SA'){
       call <- 
 'Optimus(NCPU=4, OPTNAME="IJ.NEW.OPTI.SA",
-        NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
-        OPT.TYPE="SA", 
-        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
+         NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
+         OPT.TYPE="SA", 
+         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if(method=='RE') {
       call <- 
 'Optimus(NCPU=12, OPTNAME="IJ.NEW.OPTI.RE",
-        NUMITER=200000, DUMP.FREQ=100000, LONG=FALSE,
-        OPT.TYPE="RE", ACCRATIO=ACCRATIO,
-        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
+         NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
+         OPT.TYPE="RE", ACCRATIO=ACCRATIO,
+         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
   }
   fileConn<-file(file_name)
