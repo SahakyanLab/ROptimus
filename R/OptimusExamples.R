@@ -426,15 +426,15 @@ ACCRATIO = c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
 
 # Defining Optimus Inputs
 
-data(ij_orig) 
-K <- IJ.ORIG
+data(IJ_ORIG) 
+K <- IJ_ORIG
 set.seed(seed)
 # Shuffle all js once
 K[,"j"] <- sample(x=K[,"j"], size=nrow(K), replace=FALSE)
 
-DATA <- list(IJ.ORIG=IJ.ORIG, 
+DATA <- list(IJ_ORIG=IJ_ORIG, 
              gaplimit=gaplimit,
-             numContacts=nrow(IJ.ORIG))
+             numContacts=nrow(IJ_ORIG))
 
 m <- function(K, DATA){
   # Total number of erroneous contacts in the new set
@@ -442,7 +442,7 @@ m <- function(K, DATA){
     # Contacts not satisfying the threshold value of the gap between their two regions
     ( (K[,"j"]-K[,"i"]) <= DATA$gaplimit ) |
     # Contacts also present in the original set
-    ( K[,"j"]==DATA$IJ.ORIG[,"j"]        ) |
+    ( K[,"j"]==DATA$IJ_ORIG[,"j"]        ) |
     # Duplicated contacts in the new set
     ( duplicated(K)                      )
   )
@@ -470,15 +470,15 @@ r <- function(K){
     if(method=='SA'){
       call <- 
 'Optimus(NCPU=4, OPTNAME="IJ.NEW.OPTI.SA",
-         NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
-         OPT.TYPE="SA", 
-         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
+        NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
+        OPT.TYPE="SA", 
+        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if(method=='RE') {
       call <- 
 'Optimus(NCPU=12, OPTNAME="IJ.NEW.OPTI.RE",
-         NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
-         OPT.TYPE="RE", ACCRATIO=ACCRATIO,
-         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
+        NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
+        OPT.TYPE="RE", ACCRATIO=ACCRATIO,
+        K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
   }
   fileConn<-file(file_name)

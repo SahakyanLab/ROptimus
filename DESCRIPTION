@@ -18,7 +18,7 @@ License: GPL-3
 URL: http://github.com/SahakyanLab/Optimus
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 4.0.0)
+Depends: R (>= 3.1.0)
 Imports:
     doParallel (>= 1.0.11),
     foreach (>= 1.4.4),
