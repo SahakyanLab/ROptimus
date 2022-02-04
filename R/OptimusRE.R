@@ -8,7 +8,7 @@
 #                                                                              #
 #*******************************************************************************
 #-- NUMITER        = 1000000 # Number of model optimisation steps.
-#-- EXCHANGE.FREQ  = 1000    # Frequency of exchanges (NUMITER should be 
+#-- EXCHANGE.FREQ  = 1000    # Frequency of exchanges (NUMITER should be
 #                              divisible by this number).
 #*******************************************************************************
 #-- ACCRATIO   = c(90, 50, 5, 1)  # Vector of Acceptance Ratios for each
@@ -229,13 +229,13 @@ OptimusRE <- function(NUMITER       = 1000000,
       E.stored <- E.stored.vec[repl]
       K.stored <- K.stored.vec[[repl]]
       O.stored <- O.stored.vec[[repl]]
-      
+
       # Initialise DUMP.MODEL holding current best solution (stored), which will be updated when
       # a better solution is found in this exchange
       DUMP.MODEL     <- NULL
       DUMP.MODEL[1]  <- "QUALITY:"
       DUMP.MODEL[2]  <- paste0("E: ",round(E.stored,3))
-      DUMP.MODEL[3]  <- paste0("Step stored: ", Step.stored) 
+      DUMP.MODEL[3]  <- paste0("Step stored: ", Step.stored)
       DUMP.MODEL[4]  <- paste0("Acceptance Ratio: ", IDEAL.ACC.VEC[repl])
       DUMP.MODEL[5]  <- "TERMS:"
       DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
@@ -279,7 +279,7 @@ OptimusRE <- function(NUMITER       = 1000000,
             DUMP.MODEL     <- NULL
             DUMP.MODEL[1]  <- "QUALITY:"
             DUMP.MODEL[2]  <- paste0("E: ",round(E.stored,3))
-            DUMP.MODEL[3]  <- paste0("Step stored: ", Step.stored) 
+            DUMP.MODEL[3]  <- paste0("Step stored: ", Step.stored)
             DUMP.MODEL[4]  <- paste0("Acceptance Ratio: ", IDEAL.ACC.VEC[repl])
             DUMP.MODEL[5]  <- "TERMS:"
             DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
@@ -303,7 +303,7 @@ OptimusRE <- function(NUMITER       = 1000000,
         STEP.STORED[STEP.add]     <- STEP
 
         #-- Adjusting the temperature every STATWINDOW STEP
-        if((length(ACCEPTANCE)%%STATWINDOW) == 0){ #-- thus the number of entries is n*STATWINDOW
+        if((STEP%%STATWINDOW) == 0){ #-- thus the number of entries is n*STATWINDOW
           #-- determine the new acceptance ratio
           accept.ratio.inlastWIN <- 100*sum(ACCEPTANCE[(length(ACCEPTANCE)-STATWINDOW+1):length(ACCEPTANCE)])/
             STATWINDOW
@@ -382,7 +382,7 @@ OptimusRE <- function(NUMITER       = 1000000,
         }
         #^^ # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-      } ##-- for(INT in 1:(NUMITER/EXCHANGE.FREQ)) 
+      } ##-- for(INT in 1:(NUMITER/EXCHANGE.FREQ))
       #^^ Execute MC iterations until next exchange occurs  # # # # # # # # # # #
 
       #-- if LONG==TRUE, OUTPUT will only hold the trimmed data!
@@ -423,7 +423,7 @@ OptimusRE <- function(NUMITER       = 1000000,
       OUTPUT
     })
     #^^ PARALLEL PROCESSING WRAP # # # # # # # # #
-    
+
     repl.order <- sapply(X=1:NCPU, simplify=TRUE, FUN=function(i) result[[i]]$repl)
     result <- result[order(repl.order, decreasing=FALSE)]
 
@@ -479,7 +479,7 @@ OptimusRE <- function(NUMITER       = 1000000,
     temp$E.old    <- E.old.vec[index1]
     temp$Q.old    <- Q.old.vec[index1]
     temp$K        <- configs[[index1]]
-   
+
     E.old.vec[index1]      <- E.old.vec[index2]
     Q.old.vec[index1]      <- Q.old.vec[index2]
     configs[[index1]]      <- configs[[index2]]

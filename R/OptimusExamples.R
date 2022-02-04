@@ -5,10 +5,10 @@ OptimusExamples <- function(example=1, method="SA",
                             mopac="~/Downloads/MOPAC2016_for_Macintosh/MOPAC2016.exe",
                             run=FALSE){
   setwd(dir)
-  dir.create(paste0('example_',example))
-  setwd(paste0(dir,'/example_',example))
-  getwd()
-  
+  #dir.create(paste0('example_',example))
+  #setwd(paste0(dir,'/example_',example))
+  #getwd()
+
   if(example==1){
     text <-
 'library(Optimus)
@@ -38,7 +38,7 @@ u <- function(O, DATA){
   Q <- sqrt(mean((O-y)^2))
   E <- Q # For RMSD, <-> negative sign or other mathematical operation
          # is not needed.
-  
+
   RESULT   <- NULL
   RESULT$Q <- Q
   RESULT$E <- E
@@ -50,31 +50,31 @@ u <- function(O, DATA){
 r <- function(K){
   K.new <- K
   move.step <- 0.0005
-  
+
   # Randomly selecting a coefficient to alter:
   K.ind.toalter <- sample(size=1, x=1:length(K.new))
-  
+
   # Creating a potentially new set of coefficients where one entry is altered
   # by either +move.step or -move.step, also randomly selected:
   K.new[K.ind.toalter] <- K.new[K.ind.toalter] + sample(size=1, x=c(-move.step, move.step))
-  
+
   return(K.new)
 }
 ################################################################################
 '
     if(method=='SA'){
-      call = 
+      call =
 'Optimus(NCPU=4, OPTNAME="poly_4_SA", LONG=FALSE,
         OPT.TYPE="SA",
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if(method=='RE'){
-      call = 
+      call =
 'Optimus(NCPU=12, OPTNAME="poly_12_RE", LONG=FALSE,
         OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
-    
-    
+
+
   } else if(example==2){
     text <-
 'library(Optimus)
@@ -122,7 +122,7 @@ K <- c(term1=rbinom(n=1, size=1, prob=0.5),
 m <- function(K, DATA){
   y <- DATA$y
   x <- DATA$x
-  
+
   terms <- c("+x",
              "+I(x^2)",
              "+I(x^3)",
@@ -153,7 +153,7 @@ m <- function(K, DATA){
              "+I(exp(x)*cos(x))",
              "+I(abs(x)*sin(x))",
              "+I(abs(x)*cos(x))")
-  
+
   # Intercept term is allowed in all the cases of the equation.
   ind.terms <- which(K == 1)
   if(length(ind.terms)!=0){
@@ -161,9 +161,9 @@ m <- function(K, DATA){
   } else {
     equation <-"y~x" # In case there are no active terms, use a simple linear model.
   }
-  
+
   O <- glm(equation, data = environment())
-  
+
   return(O)
 }
 ################################################################################
@@ -171,10 +171,10 @@ m <- function(K, DATA){
 ################################################################################
 u <- function(O, DATA){
   y <- DATA$y
-  
+
   Q <- sqrt(mean((O$fitted.values-y)^2))
   E <- AIC(O)/1000 # Akaike\'s information criterion.
-  
+
   result   <- NULL
   result$Q <- Q
   result$E <- E
@@ -198,7 +198,7 @@ r <- function(K){
 ################################################################################
 '
     if(method=='SA'){
-      call <- 
+      call <-
 'Optimus(NCPU=4, OPTNAME="term_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
         OPT.TYPE="SA",
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
@@ -208,8 +208,8 @@ r <- function(K){
         OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
-    
-    
+
+
   } else if (example==3) {
     text <- paste0(
 'library(Optimus)
@@ -226,11 +226,11 @@ m <- function(K,
   # mopac.cmd="~/Downloads/MOPAC2016_for_Macintosh/MOPAC2016.exe"
   # m(K=c(PHI=90.0, PSI=90.0), notconvergedE = -100.00,
   #   mopac.cmd="/home/group/prog/mopac2016/MOPAC2016.exe", clean=TRUE)
-  
-  
+
+
   # MOPAC semiempirical QM input file preparation, with given PHI and PSI
   # dihedral angles.
-  
+
   geo <- c(
     "RHF PM6 EF GEO-OK MMOK T=10 THREADS=1",
     "Vitamin C with two controllable dihedral angles psi(7,6,3,1) and phi(11,10,6,7)",
@@ -257,7 +257,7 @@ m <- function(K,
     "O     1.18961787  1  136.9144035  1   -0.6060924  1    19    16    17",
     "  "
   )
-  
+
   # Submitting the MOPAC optimisation job, where all the spatial parameters
   # are relaxed except the pre-set PHI and PSI angles. The job is run requesting
   # maximum 10 seconds of time limitation. Most (if not all) complete within
@@ -265,7 +265,7 @@ m <- function(K,
   random.id <- as.character(sample(size=1, x=1:10000000))
   write(geo, file=paste0(random.id,".mop"))
   system(paste0(mopac.cmd," ",random.id,".mop"))
-  
+
   if( file.exists(paste0(random.id,".arc")) ){
     e.line <- grep("HEAT OF FORMATION",
                    readLines(paste0(random.id,".arc")),
@@ -275,11 +275,11 @@ m <- function(K,
   } else {
     O <- notconvergedE
   }
-  
+
   if(clean){
     file.remove(grep(random.id, dir(), value=TRUE))
   }
-  
+
   return(O) # heat of form ation in kcal/mol
 }
 ################################################################################
@@ -303,40 +303,40 @@ r <- function(K){
   # Altering that term by either +alter.by or -alter.by
   K.new[K.ind.toalter] <-
     K.new[K.ind.toalter] + sample(size=1, x=c(alter.by, -alter.by))
-  
+
   # Setting the dihedral angles to be always within the -180 to 180 range.
   if( K.new[K.ind.toalter] > 180.0 ){
     K.new[K.ind.toalter] <- K.new[K.ind.toalter] - 360
   }
-  
+
   if( K.new[K.ind.toalter] < -180.0 ){
     K.new[K.ind.toalter] <- K.new[K.ind.toalter] + 360
   }
-  
+
   return(K.new)
 }
 ################################################################################
 ')
     if (method=='SA') {
-      call <- 
+      call <-
       'Optimus(NCPU=4, OPTNAME="vitamin_4_SA", NUMITER=1e+05, CYCLES=2, DUMP.FREQ=50000, LONG=FALSE,
               OPT.TYPE="SA",
               K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=NULL)'
     } else if (method=='RE') {
-      call <- 
+      call <-
       'Optimus(NCPU=12, OPTNAME="vitamin_12_RE", NUMITER=1e+05, EXCHANGE.FREQ=500, STATWINDOW=50, DUMP.FREQ=50000, LONG=FALSE,
               OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
               K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=NULL)'
     }
-    
+
   } else if (example==4) {
-    text <- 
+    text <-
 'library(Optimus)
 set.seed(845)
 state  <- c(cA=100, cB=100, cC=100, cAP=0, cBP=0, cCP=0)
 target <- c(cA=90, cB=20, cC=70, cAP=10, cBP=80, cCP=30)
 model <- function(t, state, K){
-  
+
   with( as.list(c(state, K)), {
     # rate of change
     dcA  <- -k1*cA+k2*cAP*cB
@@ -364,9 +364,9 @@ library(deSolve)
 m <- function(K, DATA){
   state <- DATA$state
   model <- DATA$model
-  
+
   span <- 10.0
-  
+
   times <- c(0, span)
   O   <- ode(y=state, times=times, func=model, parms=K)[2,2:(length(state)+1)]
   return(O)
@@ -379,13 +379,13 @@ u <- function(O, DATA){
   RESULT <- NULL
   RESULT$Q <- sqrt(mean((O-target)^2)) # measure of the fit quality
   RESULT$E <- RESULT$Q # the pseudoenergy derived from the above measure
-  
+
   return(RESULT)
 }
 ################################################################################
 
 ################################################################################
-r <- function(K){                               
+r <- function(K){
   K.new <- K
   # Randomly selecting a coefficient to alter:
   K.ind.toalter <- sample(size=1, x=1:length(K.new))
@@ -393,29 +393,29 @@ r <- function(K){
   # by either +move.step or -move.step, also randomly selected:
   move.step <- 0.0002
   K.new[K.ind.toalter] <- K.new[K.ind.toalter] + sample(size=1, x=c(-move.step, move.step))
-  
+
   ## Setting the negative coefficients to 0
   neg.ind <- which(K.new < 0)
   if(length(neg.ind)>0){ K.new[neg.ind] <- 0 }
-  
+
   return(K.new)
 }
 ################################################################################
 '
     if (method=='SA'){
-      call <- 
+      call <-
       'Optimus(NCPU=4, OPTNAME="DE_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
               OPT.TYPE="SA",
               K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if (method=='RE'){
-      call <- 
+      call <-
         'Optimus(NCPU=12, OPTNAME="DE_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
                 OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
                 K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
-    
+
   } else if (example==5){
-    text <- 
+    text <-
 'library(Optimus)
 
 # User-defined inputs
@@ -426,13 +426,13 @@ ACCRATIO = c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
 
 # Defining Optimus Inputs
 
-data(IJ_ORIG) 
+data(IJ_ORIG)
 K <- IJ_ORIG
 set.seed(seed)
 # Shuffle all js once
 K[,"j"] <- sample(x=K[,"j"], size=nrow(K), replace=FALSE)
 
-DATA <- list(IJ_ORIG=IJ_ORIG, 
+DATA <- list(IJ_ORIG=IJ_ORIG,
              gaplimit=gaplimit,
              numContacts=nrow(IJ_ORIG))
 
@@ -468,21 +468,21 @@ r <- function(K){
 }
 '
     if(method=='SA'){
-      call <- 
+      call <-
 'Optimus(NCPU=4, OPTNAME="IJ.NEW.OPTI.SA",
         NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
-        OPT.TYPE="SA", 
+        OPT.TYPE="SA",
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if(method=='RE') {
-      call <- 
+      call <-
 'Optimus(NCPU=12, OPTNAME="IJ.NEW.OPTI.RE",
         NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
         OPT.TYPE="RE", ACCRATIO=ACCRATIO,
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
   }
-  fileConn<-file(file_name)
-  writeLines(c(paste0('setwd("',dir,'/example_',example,'")'),text,call), fileConn)
+  fileConn <- file(file_name)
+  writeLines( c(paste0('setwd("',dir,'")'), text, call), fileConn)
   close(fileConn)
   if (run) {
     source(file_name)

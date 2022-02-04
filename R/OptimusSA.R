@@ -134,7 +134,7 @@ OptimusSA <- function(NUMITER       = 1000000,
   #-- The aimed ideal acceptance ratio.
   IDEAL.ACC.VEC         = rep(seq(from = ACCRATIO.IN, to = ACCRATIO.FIN, by =
                                     (ACCRATIO.FIN-ACCRATIO.IN)/((NUMITER/CYCLES)-1)
-  ), CYCLES)
+                                 ), CYCLES)
   #-- The calculated de facto acceptance rate over the last STATWINDOW.
   ACC.VEC.DE.FACTO      = NULL
   #-- The corresponding checkpoint steps.
@@ -280,7 +280,7 @@ OptimusSA <- function(NUMITER       = 1000000,
       }
 
       #-- Adjusting the temperature every STATWINDOW STEP
-      if((length(ACCEPTANCE)%%STATWINDOW) == 0){ #-- thus the number of entries is n*STATWINDOW
+      if((STEP%%STATWINDOW) == 0){ #-- thus the number of entries is n*STATWINDOW
         #-- determine the new acceptance ratio
         accept.ratio.inlastWIN <- 100*sum(ACCEPTANCE[(length(ACCEPTANCE)-STATWINDOW+1):length(ACCEPTANCE)])/
           STATWINDOW
