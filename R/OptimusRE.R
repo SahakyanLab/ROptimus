@@ -237,10 +237,10 @@ OptimusRE <- function(NUMITER       = 1000000,
       DUMP.MODEL[2]  <- paste0("E: ",round(E.stored,3))
       DUMP.MODEL[3]  <- paste0("Step stored: ", Step.stored)
       DUMP.MODEL[4]  <- paste0("Acceptance Ratio: ", IDEAL.ACC.VEC[repl])
-      DUMP.MODEL[5]  <- "TERMS:"
-      DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
-      DUMP.MODEL[7]  <- "COEFFICIENTS:"
-      DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=FALSE, trim=TRUE), collapse=" ")
+      #        DUMP.MODEL[5]  <- "TERMS:"
+      #        DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
+      #        DUMP.MODEL[7]  <- "COEFFICIENTS:"
+      #        DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=FALSE, trim=TRUE), collapse=" ")
 
       #-- Execute MC iterations until next exchange occurs
       for(INT in 1:(NUMITER/EXCHANGE.FREQ)){
@@ -281,10 +281,10 @@ OptimusRE <- function(NUMITER       = 1000000,
             DUMP.MODEL[2]  <- paste0("E: ",round(E.stored,3))
             DUMP.MODEL[3]  <- paste0("Step stored: ", Step.stored)
             DUMP.MODEL[4]  <- paste0("Acceptance Ratio: ", IDEAL.ACC.VEC[repl])
-            DUMP.MODEL[5]  <- "TERMS:"
-            DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
-            DUMP.MODEL[7]  <- "COEFFICIENTS:"
-            DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=FALSE, trim=TRUE), collapse=" ")
+            #        DUMP.MODEL[5]  <- "TERMS:"
+            #        DUMP.MODEL[6]  <- paste(as.character(names(K.stored)), collapse=" ")
+            #        DUMP.MODEL[7]  <- "COEFFICIENTS:"
+            #        DUMP.MODEL[8]  <- paste(format(as.vector(K.stored), scientific=FALSE, trim=TRUE), collapse=" ")
             #        DUMP.MODEL[9]  <- "OBSERVABLES:"
             #        DUMP.MODEL[10] <- paste(as.character(names(O.stored)), collapse=" ")
             #        DUMP.MODEL[11] <- "PREDICTIONS:"

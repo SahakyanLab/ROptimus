@@ -482,7 +482,7 @@ r <- function(K){
     }
   }
   fileConn <- file(file_name)
-  writeLines( c(paste0('setwd("',dir,'")'), text, call), fileConn)
+  writeLines( c(text, call), fileConn )
   close(fileConn)
   if (run) {
     source(file_name)
