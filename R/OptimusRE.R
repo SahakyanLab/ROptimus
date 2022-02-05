@@ -357,7 +357,7 @@ OptimusRE <- function(NUMITER       = 1000000,
 
 
         if(STEP%%DUMP.FREQ == 0 & exists("DUMP.MODEL") ){
-          DUMP.MODEL[9] <- paste0("Step dumped: ", STEP)
+          DUMP.MODEL[5] <- paste0("Step dumped: ", STEP)
           write(DUMP.MODEL, file=paste0(DIR,'/',OPTNAME,repl,"_model_QE.log"))
           save(K.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_K.Rdata"))
           save(O.stored,    file=paste0(DIR,'/',OPTNAME,repl,"_model_O.Rdata"))
