@@ -199,12 +199,12 @@ r <- function(K){
 '
     if(method=='SA'){
       call <-
-'Optimus(NCPU=4, OPTNAME="term_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
+'Optimus(NCPU=4, OPTNAME="term_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=1000, LONG=FALSE,
         OPT.TYPE="SA",
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if(method=='RE'){
       call <-
-'Optimus(NCPU=12, OPTNAME="term_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
+'Optimus(NCPU=12, OPTNAME="term_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=1000, LONG=FALSE,
         OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
@@ -319,12 +319,12 @@ r <- function(K){
 ')
     if (method=='SA') {
       call <-
-      'Optimus(NCPU=4, OPTNAME="vitamin_4_SA", NUMITER=1e+05, CYCLES=2, DUMP.FREQ=50000, LONG=FALSE,
+      'Optimus(NCPU=4, OPTNAME="vitamin_4_SA", NUMITER=1e+05, CYCLES=2, DUMP.FREQ=1000, LONG=FALSE,
               OPT.TYPE="SA",
               K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=NULL)'
     } else if (method=='RE') {
       call <-
-      'Optimus(NCPU=12, OPTNAME="vitamin_12_RE", NUMITER=1e+05, EXCHANGE.FREQ=500, STATWINDOW=50, DUMP.FREQ=50000, LONG=FALSE,
+      'Optimus(NCPU=12, OPTNAME="vitamin_12_RE", NUMITER=1e+05, EXCHANGE.FREQ=500, STATWINDOW=50, DUMP.FREQ=1000, LONG=FALSE,
               OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
               K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=NULL)'
     }
@@ -404,12 +404,12 @@ r <- function(K){
 '
     if (method=='SA'){
       call <-
-      'Optimus(NCPU=4, OPTNAME="DE_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE,
+      'Optimus(NCPU=4, OPTNAME="DE_4_SA", NUMITER=200000, CYCLES=2, DUMP.FREQ=1000, LONG=FALSE,
               OPT.TYPE="SA",
               K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if (method=='RE'){
       call <-
-        'Optimus(NCPU=12, OPTNAME="DE_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE,
+        'Optimus(NCPU=12, OPTNAME="DE_12_RE", NUMITER=200000, STATWINDOW=50, DUMP.FREQ=1000, LONG=FALSE,
                 OPT.TYPE="RE", ACCRATIO=c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2),
                 K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
@@ -470,13 +470,13 @@ r <- function(K){
     if(method=='SA'){
       call <-
 'Optimus(NCPU=4, OPTNAME="IJ.NEW.OPTI.SA",
-        NUMITER=200000, CYCLES=2, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
+        NUMITER=200000, CYCLES=2, DUMP.FREQ=1000, LONG=FALSE, SEED=seed,
         OPT.TYPE="SA",
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     } else if(method=='RE') {
       call <-
 'Optimus(NCPU=12, OPTNAME="IJ.NEW.OPTI.RE",
-        NUMITER=200000, STATWINDOW=50, DUMP.FREQ=100000, LONG=FALSE, SEED=seed,
+        NUMITER=200000, STATWINDOW=50, DUMP.FREQ=1000, LONG=FALSE, SEED=seed,
         OPT.TYPE="RE", ACCRATIO=ACCRATIO,
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
