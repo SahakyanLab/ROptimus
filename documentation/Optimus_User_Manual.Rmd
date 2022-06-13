@@ -174,6 +174,187 @@ references:
   type: book
   issued:
     year: 2009
+- id: NMOF2022 # Added by Liezel
+  title: Numerical Methods and Optimization in Finance (NMOF). R package version 2.5-1
+  author:
+  - family: Schumann
+    given: Enrico
+  container-title: 
+  URL: https://github.com/enricoschumann/NMOF
+  type: Manual
+  issued:
+    year: 2022
+- id: Gilli2019
+  title: Numerical Methods and Optimization in Finance 2nd edition
+  author:
+  - family: Gilli
+    given: Manfred
+  - family: Maringer
+    given: Dietmar 
+  - family: Schumann
+    given: Enrico
+  container-title: Elsevier/Academic Press
+  type: Book
+  issued:
+    year: 2019
+- id: dclone2010
+  title: "dclone: Data Cloning in R"
+  author:
+  - family: Solymos
+    given: Peter
+  container-title: The R Journal
+  volume: 2
+  number: 2
+  page: 29-37
+  URL: https://datacloning.org/
+  type: Article
+  issued:
+    year: 2010
+- id: GenSA2013
+  title: "Generalized Simulated Annealing for Efficient Global Optimization: the GenSA Package for R"
+  author:
+  - family: Xiang
+    given: Yang
+  - family: Gubian
+    given: Sylvain
+  - family: Suomela
+    given: Brian
+  - family: Hoeng
+    given: Julia
+  container-title: The R Journal
+  volume: 5
+  number: 1
+  URL: https://journal.r-project.org/archive/2013/RJ-2013-002/index.html
+  type: Article
+  issued:
+    year: 2013
+    month: 06
+- id: qap2017
+  title: "qap: Heuristics for the Quadratic Assignment Problem (QAP). R package version 0.1-1"
+  author:
+  - family: Hahsler
+    given: Michael
+  container-title: 
+  URL: https://CRAN.R-project.org/package=qap
+  type: Manual
+  issued:
+    year: 2017
+- id: stats2021
+  title: "R: A Language and Environment for Statistical Computing"
+  author:
+  - family: R Core Team
+    given: 
+  container-title: R Foundation for Statistical Computing, Vienna, Austria
+  URL: https://www.R-project.org/
+  type: Manual
+  issued:
+    year: 2021
+- id: optimization2017
+  title: "The R Package optimization: Flexible Global Optimization with Simulated-Annealing"
+  author:
+  - family: Husmann
+    given: Kai
+  - family: Lange
+    given: Alexander 
+  - family: Spiegel
+    given: Elmar
+  container-title: 
+  URL: https://github.com/kaihusmann/optimization
+  type: Manual
+  issued:
+    year: 2017
+- id: likelihood2022
+  title: "likelihood: Methods for Maximum Likelihood Estimation. R package version 1.8"
+  author:
+  - family: Murphy
+    given: Lora
+  container-title: 
+  URL: https://CRAN.R-project.org/package=likelihood
+  type: Manual
+  issued:
+    year: 2022
+- id: King2016
+  title: "Statistical Inference for Partially Observed Markov Processes via the R Package pomp"
+  author:
+  - family: King
+    given: Aaron A.
+  - family: Nguyen
+    given: Dao
+  - family: Ionides
+    given: Edward L.
+  container-title: Journal of Statistical Software
+  volume: 69
+  number: 12
+  page: 1-43
+  URL: https://www.jstatsoft.org/article/view/v069i12
+  DOI: 10.18637/jss.v069.i12
+  type: Article
+  issued:
+    year: 2016
+- id: pomp2022
+  title: "pomp: Statistical Inference for Partially Observed Markov Processes. R package version 4.1"
+  author:
+  - family: King
+    given: Aaron A.
+  - family: Ionides
+    given: Edward L.
+  - family: Breto
+    given: Carles Martinez
+  - family: Ellner
+    given: Stephen P.
+  - family: Ferrari
+    given: Matthew J.
+  - family: Funk
+    given: Sebastian 
+  - family: Johnson
+    given: Steven G.
+  - family: Kendall
+    given: Bruce E.
+  - family: Lavine
+    given: Michael
+  - family: Nguyen
+    given: Dao
+  - family: O'Dea
+    given: Eamon B.
+  - family: Reuman
+    given: Daniel C. 
+  - family: Wearing
+    given: Helen 
+  - family: Wood
+    given: Simon N.
+  container-title: 
+  URL: https://kingaa.github.io/pomp/
+  type: Manual
+  issued:
+    year: 2022
+- id: subselect2020
+  title: "subselect: Selecting Variable Subsets. R package version 0.15.2"
+  author:
+  - family: Orestes Cerdeira
+    given: Jorge
+  - family: Duarte Silva
+    given: Pedro
+  - family: Cadima
+    given: Jorge 
+  - family: Minhoto
+    given: Manuel 
+  container-title: 
+  URL: https://CRAN.R-project.org/package=subselect
+  type: Manual
+  issued:
+    year: 2020
+- id: CTV2022
+  title: "CRAN Task View: Optimization and Mathematical Programming. Version 2022-04-12"
+  author:
+  - family: Schwendinger
+    given: Florian
+  - family: Borchers
+    given: Hans W. 
+  container-title: 
+  URL: https://CRAN.R-project.org/view=Optimization.
+  type: Manual
+  issued:
+    year: 2022
 ---
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center', out.width='600pt'}
@@ -249,7 +430,12 @@ p_{re} = min(1, P(T_{i+1} - T_i;E(x_n)-E(x_m))
 $$
 Thus, overall, replica exchange simulations can be executed by simulating $n$ replicas of a simulation at distinct temperatures simultaneously and independently, next randomly selecting two configurations in adjacent replicas and exchanging them with probability $p_{re}$.
 
-Optimus modifies the Monte Carlo analogue of the replica exchange approach to apply to any arbitrary optimisation problem with two primary modifications. Firstly, due to the aforementioned transferability of utilising acceptance ratio as a controlling metric rather than pseudo temperature in arbitrary systems, Optimus initialises $n$ replicas with different fixed target acceptance ratios as opposed to fixed temperatures, and uses the previously described TCU for the adaptive thermoregulation to keep up with the fixed acceptance ratio values for varying **K** within a given replica. Secondly, since Optimus is only concerned with finding an optimal solution and is not compliant with any equilibrium sampling of the parameter space (see the A and B criteria described above), after two candidate configurations are selected for exchange, they are necessarily exchanged (this can be viewed as setting $p_{re} = 1$ in the above procedure) [@Ballard2009]. The exchange regiment is controlled through the input, with a default optimal value that works well in most cases. By relaxing the equilibrium sampling criterion, the parameter space can be more extensively explored for the sole reason of finding an optimal solution. This approach produces good results, as illustrated in the tutorials, and is a viable alternative to the acceptance ratio annealing mode in Optimus optimisations, when the user has access to better computational resources.
+
+## Comparison with existing related R packages 
+
+Optimus excels at being a general-purpose optimisation engine that can be applied to a diverse set of problems through the flexibility and modularity of its interfacing functions and the capability to extensively search the parameter space by using a transferable process that uses acceptance ratio-based adaptive thermoregulation, in lieu of the situational tuning of the conventional, more system- and scale-dependent pseudo temperature, and by offering an all-purpose replica exchange option borrowed from parallel tempering often implemented in molecular dynamics simulations and other Monte Carlo methods. 
+
+Among the packages listed in *CRAN Task View: Optimization and Mathematical Programming* (Version: 2022-04-12) [@CTV2022], the ones with simulated annealing capabilities are *NMOF* [@Gilli2019], [@NMOF2022], *dclone* [@dclone2010], *GenSA* [@GenSA2013], *qap* [@qap2017] and *stats* [@stats2021]. In addition, SA is also offered by *optimization* [@optimization2017], *likelihood* [@likelihood2022], *pomp* [@King2016], [@pomp2022] and *subselect* [@subselect2020] packages. Unlike Optimus, the above packages employ the conventional pseudo temperature-based annealing procedure, which subjects them to problems detailed in previous sections e.g. the current temperature scale being suddenly irrelevant due to huge alterations in the system. Moreover, their temperature control (e.g. monotonic, geometric and logarithmic cooling) is not adaptive so users have to pay extra attention to input arguments controlling the thermoregulation still with no assurance of effective parameter space sampling especially for complex problems with many local optimum traps. Finally, most of the packages expect limited or a specific format of a problem (e.g. fitting coefficients, maximum likelihood estimation) and therefore, expect specific data types for inputs (e.g. numeric vectors or list). Consequently, the alteration rule for generating new candidate solutions, sometimes hard-coded within the function, is constrained making it difficult to repurpose these packages. In contrast, a key strength Optimus is its modularity and flexibility, allowing users to design any model, objective/cost and alteration functions that can be made to handle any R objects.
 
 # How to Cite
 
