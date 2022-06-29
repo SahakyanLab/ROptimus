@@ -3,12 +3,18 @@
 OptimusExamples <- function(example=1, method="SA",
                             file_name="example.R", dir=".",
                             mopac="~/Downloads/MOPAC2016_for_Macintosh/MOPAC2016.exe",
-                            run=FALSE){
+                            run=FALSE, vignette=TRUE){
+  
+  if(vignette){
+    file.copy(from=paste0(find.package("Optimus"), "/data/Tutorial", example, ".pdf"), 
+              to=paste0(dir, "/Tutorial", example, ".pdf"))
+  }
+  
   setwd(dir)
   #dir.create(paste0('example_',example))
   #setwd(paste0(dir,'/example_',example))
   #getwd()
-
+  
   if(example==1){
     text <-
 'library(Optimus)
