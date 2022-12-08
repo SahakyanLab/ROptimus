@@ -447,7 +447,7 @@ The usage of ROptimus should be accompanied with the following citations:
 
 # Installation Instructions
 
-Installing ROptimus locally for immediate use requires only R and a connection to the Internet. After opening an R client, execute the commands below to install ROptimus. Note, that the latest version of Rtools is required for this installation to work. If it is not available locally and the installation is attempted from within RStudio, a prompt will appear to download and install Rtools. After following those instructions, restart the RStudio session before reattempting the ROptimus installation.
+Installing ROptimus locally for immediate use requires only R and a connection to the Internet. It is available both on CRAN (stable release) and on GitHub (latest release). To install the latter version, open an R client and execute the commands below. Note, that the latest version of Rtools is required for this installation to work. If it is not available locally and the installation is attempted from within RStudio, a prompt will appear to download and install Rtools. After following those instructions, restart the RStudio session before reattempting the ROptimus installation.
 
 ```{r, tidy=FALSE, echo=TRUE, eval=FALSE}
 install.packages("devtools")           # install devtools
