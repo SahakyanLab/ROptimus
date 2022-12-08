@@ -1,6 +1,6 @@
 ---
 title: "**ROptimus User Manual**"
-date: "02 December 2022"
+date: "08 December 2022"
 output: pdf_document
 references:
 - id: Raue2013
@@ -525,7 +525,7 @@ sqrt(mean((y-y.realdep)^2))
 
 ## Defining ROptimus Inputs
 
-Now we can set up the inputs for the ROptimus run. We shall use the model $k_1x+k_2x^2+k_3x^3+k_4x^4$ to fit the $y$ observables based on the values for $x$. The dependent functions that are needed for setting up an ROptimus run, are given as inputs in the ROptimus function call.
+Now we can set up the inputs for the ROptimus run. We shall use the model $k_1x+k_2x^2+k_3x^3+k_4x^4$ to fit the $y$ observables based on the values for $x$. The dependent functions that are needed for setting up an ROptimus run, are given as inputs in the \texttt{Optimus()} call.
 
 First, we need to create the essential object \texttt{K}, which stores the initial values for the parameter(s) to be optimised. \texttt{K} can be an object of any type. From a single numeric or character value to a vector of values or a data frame holding, say, Cartesian coordinates of a molecule to be optimised. The only ROptimus requirement from \texttt{K} is that it should be something alterable (*via* a rule function \texttt{r()}, see below) and should influence the outcome of another required model function - \texttt{m()} (see below). In this example, we have 4 coefficients to optimise from some random initial state. We can thus make \texttt{K} be a numeric vector of size 4. Let us start from all the components being $1.0$, which, as entries in \texttt{K}, can be both named and unnamed. Though not the case here, the entry-named data for \texttt{K} can be essential for some models that specifically use coefficient names, for instance when a system of ODEs is used in the model function \texttt{m()} in one of the tutorials.
 
@@ -533,7 +533,7 @@ First, we need to create the essential object \texttt{K}, which stores the initi
 K <- c(k1=1.0, k2=1.0, k3=1.0, k4=1.0) # entries are named as k1, k2, k3 and k4
 ```
 
-Second, we should create the function \texttt{m()} for the model. The function \texttt{m()} should be designed to operate on the whole set of parameter snapshot \texttt{K} and return the corresponding observable object \texttt{O}. Please note that the size and shape of \texttt{K} and \texttt{O} are not necessarily to match, depending on the nature of the model used. Operating on \texttt{K} is **one of the hard conditions** on \texttt{m()}, which can optionally operate on other data as well. In our situation, the function \texttt{m()} should operate on the provided instance of four coefficients (in the object \texttt{K}), and, additionally on the values $x$. It should then return a vector of observations \texttt{O} (to be compared with $y$ target observations) of the same size as vector $x$. Any additional data required by the model, in our case an object with the set of 1000 $x$ values, must be provided to the function in an input variable \texttt{DATA}, a list holding the additional data that must be accessed by \texttt{m()} and \texttt{u()} (see below). The variable \texttt{DATA} **must be provided** to ROptimus in the function call, and \texttt{m()} **must take it** as an input. In the case that neither \texttt{m()} nor \texttt{u()} require additional data, the two functions should still be created such that they take a variable \texttt{DATA} as an input, and the variable \texttt{DATA} passed to ROptimus will be set to \texttt{NULL}).
+Second, we should create the function \texttt{m()} for the model. The function \texttt{m()} should be designed to operate on the whole set of parameter snapshot \texttt{K} and return the corresponding observable object \texttt{O}. Please note that the size and shape of \texttt{K} and \texttt{O} are not necessarily to match, depending on the nature of the model used. Operating on \texttt{K} is **one of the hard conditions** on \texttt{m()}, which can optionally operate on other data as well. In our situation, the function \texttt{m()} should operate on the provided instance of four coefficients (in the object \texttt{K}), and, additionally on the values $x$. It should then return a vector of observations \texttt{O} (to be compared with $y$ target observations) of the same size as vector $x$. Any additional data required by the model, in our case an object with the set of 1000 $x$ values, must be provided to the function in an input variable \texttt{DATA}, a list holding the additional data that must be accessed by \texttt{m()} and \texttt{u()} (see below). The variable \texttt{DATA} **must be provided** to \texttt{Optimus()}, and \texttt{m()} **must take it** as an input. In the case that neither \texttt{m()} nor \texttt{u()} require additional data, the two functions should still be created such that they take a variable \texttt{DATA} as an input, and the variable \texttt{DATA} passed to \texttt{Optimus()} will be set to \texttt{NULL}).
 
 ```{r, tidy=TRUE, echo=TRUE, eval=TRUE}
 # Generating an object that is then to be passed to DATA argument of Optimus().
@@ -550,7 +550,7 @@ m <- function(K, DATA){
 }
 ```
 
-At this point, calling \texttt{m(K=K, DATA=DATA)} from within ROptimus will return the predicted \texttt{O} set from the initial, non-optimal values for \texttt{K}, hence rather far from the target $O^{trg}=y$.
+At this point, calling \texttt{m(K=K, DATA=DATA)} from within \texttt{Optimus()} will return the predicted \texttt{O} set from the initial, non-optimal values for \texttt{K}, hence rather far from the target $O^{trg}=y$.
 
 In this example, the optimisation goal is for the \texttt{O} model outcomes to come as close as possible to the target observations $y$, to be achieved by optimising the coefficients \texttt{K}. The object $y$ holding the target values therefore also needs to be specified and given as an input to the main \texttt{Optimus()} function (as a constituent entry in the \texttt{DATA} argument), just like $x$ was supplied, as required, in this example, by the function \texttt{m()}.
 
@@ -591,11 +591,11 @@ r <- function(K){
 }
 ```
 
-All the constructed objects (\texttt{K}) and functions (\texttt{m}, \texttt{u}, \texttt{r}), as well as the data required by \texttt{m()} and \texttt{u()} (stored in the variable to be passed to \texttt{DATA}) should be defined in an R session and given to ROptimus as inputs. The users are free to define some dependencies as additional files (for example: initial protein geometry for a Monte-Carlo optimisation), which should be called from within the function definitions.
+All the constructed objects (\texttt{K}) and functions (\texttt{m}, \texttt{u}, \texttt{r}), as well as the data required by \texttt{m()} and \texttt{u()} (stored in the variable to be passed to \texttt{DATA}) should be defined in an R session and given to \texttt{Optimus()} as inputs. The users are free to define some dependencies as additional files (for example: initial protein geometry for a Monte-Carlo optimisation), which should be called from within the function definitions.
 
 ## Acceptance Ratio Simulated Annealing ROptimus Run
 
-Having constructed \texttt{K}, dependent data for \texttt{DATA} argument of \texttt{Optimus()}, \texttt{m()}, \texttt{u()} and \texttt{r()}, we are now ready to call ROptimus. Let us first investigate the Acceptance Ratio Annealing (SA) version of ROptimus on 4 CPUs (the vast majority of personal computers currently have at least 4 CPUs), which can be executed as follows:
+Having constructed \texttt{K}, dependent data for \texttt{DATA} argument of \texttt{Optimus()}, \texttt{m()}, \texttt{u()} and \texttt{r()}, we are now ready to call \texttt{Optimus()}. Let us first investigate the Acceptance Ratio Annealing (SA) version of ROptimus on 4 CPUs (the vast majority of personal computers currently have at least 4 CPUs), which can be executed as follows:
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
 Optimus(NCPU=4, OPTNAME="poly_4_SA", LONG=FALSE,
@@ -603,7 +603,7 @@ Optimus(NCPU=4, OPTNAME="poly_4_SA", LONG=FALSE,
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)
 ```
 
-Note that the field \texttt{LONG=FALSE} is included in the function call so that all data from the optimsation process is saved. Calling ROptimus with \texttt{LONG=TRUE} will result in a memory saving optimisation process (more details in the Advanced Usage section in this document). Of the 4 optimisation replicas, the second and fourth CPUs found the best parameter configuration (lowest RMSD) in our trial:
+Note that the field \texttt{LONG=FALSE} is included in the function call so that all data from the optimsation process is saved. Calling \texttt{Optimus()} with \texttt{LONG=TRUE} will result in a memory saving optimisation process (more details in the Advanced Usage section in this document). Of the 4 optimisation replicas, the second and fourth CPUs found the best parameter configuration (lowest RMSD) in our trial:
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
 plot(main="Acceptance Ratio Simulated Annealing ROptimus Fitting (4 Cores)",
@@ -944,13 +944,13 @@ r <- function(K){
   return(K.new)
 }
 ```
-Having defined all the necessary inputs, we are now ready to call ROptimus.
+Having defined all the necessary inputs, we are now ready to call \texttt{Optimus()}.
 
 An important remark is that modelling this problem in this manner results in an objective function ($AIC$) that is not smooth because small changes in the parameter set \texttt{K} (as defined by \texttt{r()}) can produce significantly large changes in the objective value. The equation, i.e. the system itself, changes from one step to another. Therefore, an entirely different model is being used to fit the data at each step. Optimisation procedures in such cases are in danger to be trapped in certain minima due to a major change in pseudo temperatures necessary to overcome barriers while the system abruptly evolves. Despite this, we will see that ROptimus will get the job done by arriving at good solutions largely as a consequence of its adaptive thermoregulation and acceptance-ratio-guided optimisation procedure.
 
 ## Acceptance Ratio Simulated Annealing ROptimus Run
 
-In addition to the inputs defined above, ROptimus can optionally take other inputs to dictate the optimisation process (see the Advanced User Manual), all of which have built in default values and some of which will be altered in this example due to the increased computational complexity of the model defined in this tutorial compared to that of **Tutorial 1**. The variable \texttt{NUMITER} represents the number of iterations of the optimisation process (per core) and has a default value of 1 000 000. For this example, 200 000 iterations will be used to reduce the running time of ROptimus given that each iteration is more computationally demanding than in **Tutorial 1**. The variable \texttt{CYCLES} (unique to Acceptance Ratio Annealing ROptimus runs) denotes the number of acceptance ratio annealing cycles. Its default value is $10$, however it will be set to $2$ in this example so that each annealing cycle has 100 000 iterations just as in **Tutorial 1** (the number of steps per cycle is calculated as \texttt{NUMITER}/\texttt{CYCLES}). Lastly, the variable \texttt{DUMP.FREQ}, the frequency (in steps) with which the best found model is assessed and outputted by the function, will be set to 100 000 (its default value is 10 000).
+In addition to the inputs defined above, \texttt{Optimus()} can optionally take other inputs to dictate the optimisation process (see the Advanced User Manual), all of which have built in default values and some of which will be altered in this example due to the increased computational complexity of the model defined in this tutorial compared to that of **Tutorial 1**. The variable \texttt{NUMITER} represents the number of iterations of the optimisation process (per core) and has a default value of 1 000 000. For this example, 200 000 iterations will be used to reduce the running time of ROptimus given that each iteration is more computationally demanding than in **Tutorial 1**. The variable \texttt{CYCLES} (unique to Acceptance Ratio Annealing ROptimus runs) denotes the number of acceptance ratio annealing cycles. Its default value is $10$, however it will be set to $2$ in this example so that each annealing cycle has 100 000 iterations just as in **Tutorial 1** (the number of steps per cycle is calculated as \texttt{NUMITER}/\texttt{CYCLES}). Lastly, the variable \texttt{DUMP.FREQ}, the frequency (in steps) with which the best found model is assessed and outputted by the function, will be set to 100 000 (its default value is 10 000).
 
 Let us again investigate the Simulated Annealing (SA) version of ROptimus on 4 processors, which can be executed as follows:
 
@@ -1277,11 +1277,11 @@ r <- function(K){
 }
 ```
 
-The process of determining the energy of a conformation corresponding to a given set of angles $\psi, \phi$ is the most computationally intensive part of this optimisation formulation. Having defined the necessary inputs for ROptimus, it should be apparent that this calculation will entirely be handled by MOPAC. This ability to serve as an optimisation kernel and flexibly be knitted to an external program is one of the many strengths of ROptimus.
+The process of determining the energy of a conformation corresponding to a given set of angles $\psi, \phi$ is the most computationally intensive part of this optimisation formulation. Having defined the necessary inputs for \texttt{Optimus()}, it should be apparent that this calculation will entirely be handled by MOPAC. This ability to serve as an optimisation kernel and flexibly be knitted to an external program is one of the many strengths of ROptimus.
 
 ## Defining a Benchmark Solution
 
-Before calling ROptimus, we have established a benchmark solution to be used to independently evaluate the ability ROptimus to arrive to correct $\psi$ and $\phi$ combination. In order to explore the energy landscape associated with the parameter space of $\psi$ and $\phi$, a PM6 optimisation was performed on 10 conformers picked from the wells pf a more comprehensive potential energy surface scanning through MM2 molecular mechanics force field (the details of PM6 and MM2 are not important for the purposes of this tutorial). This resulted in the identification of 7 energy minima, shown in the table below (listed in increasing order by energy):
+Before calling \texttt{Optimus()}, we have established a benchmark solution to be used to independently evaluate the ability of ROptimus to arrive to correct $\psi$ and $\phi$ combination. In order to explore the energy landscape associated with the parameter space of $\psi$ and $\phi$, a PM6 optimisation was performed on 10 conformers picked from the wells pf a more comprehensive potential energy surface scanning through MM2 molecular mechanics force field (the details of PM6 and MM2 are not important for the purposes of this tutorial). This resulted in the identification of 7 energy minima, shown in the table below (listed in increasing order by energy):
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
 conf1 <- c(-233.206, 92.58, 74.19)
@@ -1495,7 +1495,7 @@ Given this model of the phosphorelay system, the question we desire to answer is
 
 ## Defining ROptimus Inputs
 
-Having outlined how the behaviour of the phosphorelay system can be modelled using a system of differential equations, we can now proceed with defining input parameters for ROptimus. We will create a variable state that will be a numeric vector holding the names and initial concentrations of all species in the network. For this tutorial, we will choose $[A]_i = [B]_i = [C]_i = 100$ and $[AP]_i = [BP]_i = [CP]_i = 0$. Note that the units are arbitrary and that the total sum of units across this vector will remain constant throughout the simulation of the dynamics of the phosphorelay system.
+Having outlined how the behaviour of the phosphorelay system can be modelled using a system of differential equations, we can now proceed with defining input parameters for \texttt{Optimus()}. We will create a variable state that will be a numeric vector holding the names and initial concentrations of all species in the network. For this tutorial, we will choose $[A]_i = [B]_i = [C]_i = 100$ and $[AP]_i = [BP]_i = [CP]_i = 0$. Note that the units are arbitrary and that the total sum of units across this vector will remain constant throughout the simulation of the dynamics of the phosphorelay system.
 
 ```{r, tidy=FALSE, echo=TRUE, eval=TRUE}
 state  <- c(cA=100, cB=100, cC=100, cAP=0, cBP=0, cCP=0)
@@ -1574,7 +1574,7 @@ u <- function(O, DATA){
 }
 ```
 
-The final mandatory input to ROptimus that must be defined is the alteration function \texttt{r()}. Just as in **Tutorial 1**, for each snapshot of \texttt{K}, we shall randomly select one of its four coefficients, then either increment or decrement (chosen randomly) it by $0.0002$, returning the altered set of coefficients. Since we are dealing with rate constants in this case, if ever \texttt{r()} were to make an entry in $K$ negative, that entry will automatically be set to $0$.
+The final mandatory input to \texttt{Optimus()} that must be defined is the alteration function \texttt{r()}. Just as in **Tutorial 1**, for each snapshot of \texttt{K}, we shall randomly select one of its four coefficients, then either increment or decrement (chosen randomly) it by $0.0002$, returning the altered set of coefficients. Since we are dealing with rate constants in this case, if ever \texttt{r()} were to make an entry in $K$ negative, that entry will automatically be set to $0$.
 
 ```{r, tidy=FALSE, echo=TRUE, eval=TRUE}
 r <- function(K){                               
@@ -1596,7 +1596,7 @@ r <- function(K){
 
 ## Exploring the System Dynamics
 
-Before calling ROptimus to solve this problem, let us first simulate the system of ODEs from the chosen initial state using a few sets of arbitrary rate constants to become familiar with how the system evolves. The below graphs illustrate the evolution of the system for 50 time steps for the rate constants $\{k_1=1.0, k_2=1.0, k_3=1.0, k_4=1.0\}$:
+Before calling \texttt{Optimus()} to solve this problem, let us first simulate the system of ODEs from the chosen initial state using a few sets of arbitrary rate constants to become familiar with how the system evolves. The below graphs illustrate the evolution of the system for 50 time steps for the rate constants $\{k_1=1.0, k_2=1.0, k_3=1.0, k_4=1.0\}$:
 
 ```{r, tidy=FALSE, echo=FALSE, eval=TRUE, fig.height = 5.5, fig.width = 10}
 coef  <- c(k1=1.0, k2=1.0, k3=1.0, k4=1.0)
@@ -1873,7 +1873,7 @@ The task herein is to take the DNA regions from the original set (shown above) a
 
 ## Defining ROptimus Inputs
 
-We can solve this highly constrained shuffling problem using ROptimus by doing the following preparations. Keeping the original order of $i$'s in the loaded real set of contacts (referred hereafter as \texttt{IJ\_ORIG}), we can randomly shuffle all $j$'s in the set once, without replacement. The output will be the object \texttt{K} to be supplied to ROptimus for the optimisation.
+We can solve this highly constrained shuffling problem using ROptimus by doing the following preparations. Keeping the original order of $i$'s in the loaded real set of contacts (referred hereafter as \texttt{IJ\_ORIG}), we can randomly shuffle all $j$'s in the set once, without replacement. The output will be the object \texttt{K} to be supplied to \texttt{Optimus()} for the optimisation.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
 K <- IJ_ORIG
@@ -1931,7 +1931,7 @@ r <- function(K){
 
 ## Acceptance Ratio Simulated Annealing ROptimus Run
 
-We first use the Acceptance Ratio Simulated Annealing scheme in ROptimus to solve the problem. As in **Tutorials 2** and **4**, ROptimus is set to do 200 000 steps, 2 annealing cycles, and is to produce 4 independent replicas of the same simulation.
+We first use the Acceptance Ratio Simulated Annealing scheme in ROptimus to solve the problem. As in **Tutorials 2** and **4**, \texttt{Optimus()} is set to do 200 000 steps, 2 annealing cycles, and is to produce 4 independent replicas of the same simulation.
 
 ```{r, tidy=TRUE, echo=TRUE, eval=FALSE}
 Optimus(NCPU=4, OPTNAME="IJ.NEW.OPTI.SA",
@@ -1993,7 +1993,7 @@ kable(data, caption = "Summary of solutions.")
 
 # Advanced User Manual
 
-This section will document all possible non-experimental input arguments to ROptimus and will describe the output format of ROptimus. The code snippet below is the first part of the definition of ROptimus, which lists all non-experimental input arguments. We will refer to input arguments without default values as mandatory input arguments and those with default values as optional (with the exception of \texttt{K.INITIAL}, which will be considered a mandatory input argument).
+This section will document all possible non-experimental input arguments to \texttt{Optimus()} and will describe the output format of ROptimus. The code snippet below is the first part of the definition of \texttt{Optimus()}, which lists all non-experimental input arguments. We will refer to input arguments without default values as mandatory input arguments and those with default values as optional (with the exception of \texttt{K.INITIAL}, which will be considered a mandatory input argument).
 
 ```{r, tidy=FALSE, echo=TRUE, eval=FALSE}
 Optimus <- function(NUMITER       = 1000000,
@@ -2029,7 +2029,7 @@ Optimus <- function(NUMITER       = 1000000,
 
 ## Mandatory Input Arguments
 
-All mandatory input arguments have necessarily already been defined in the tutorials. However, we will reiterate these definitions in this section. ROptimus has four mandatory inputs, \texttt{mDEF}, \texttt{uDEF}, \texttt{rDEF} (referred to as \texttt{m()}, \texttt{u()} and \texttt{r()} respectively in the tutorials) and \texttt{K.INITIAL}.
+All mandatory input arguments have necessarily already been defined in the tutorials. However, we will reiterate these definitions in this section. \texttt{Optimus()} has four mandatory inputs, \texttt{mDEF}, \texttt{uDEF}, \texttt{rDEF} (referred to as \texttt{m()}, \texttt{u()} and \texttt{r()} respectively in the tutorials) and \texttt{K.INITIAL}.
 
 ### mDEF
 
