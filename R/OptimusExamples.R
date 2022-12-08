@@ -1,7 +1,7 @@
 #' @export
 
-OptimusExamples <- function(example=1, method="SA",
-                            file_name="example.R", dir=".",
+OptimusExamples <- function(dir, example=1, method="SA",
+                            file_name="example.R",
                             mopac="~/Downloads/MOPAC2016_for_Macintosh/MOPAC2016.exe",
                             run=FALSE, vignette=TRUE){
   
