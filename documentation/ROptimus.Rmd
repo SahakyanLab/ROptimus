@@ -359,7 +359,7 @@ references:
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center', out.width='300pt'}
 library(knitr)
-include_graphics("../inst/extdata/logo.png")
+include_graphics("../data/logo.png")
 ```
 
 \setcounter{tocdepth}{2}
@@ -636,7 +636,7 @@ de-noised data found above, $28.859$.
 The two graphs below illustrate i) the evolution of the system pseudo temperature, in response to alterations made by the Temperature Control Unit (TCU), as a function of the optimsation step; and ii) the observed acceptance ratio as a function of the optimisation step, respectively. The graphs show data from the last 20 000 steps of the optimisation executed by CPU 2.
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-load("../inst/extdata/poly_4_SA2_model_ALL.Rdata")
+load("../data/poly_4_SA2_model_ALL.Rdata")
 
 T.DE.FACTO            <- OUTPUT$T.DE.FACTO[980001:1000000]
 STEP.STORED           <- OUTPUT$STEP.STORED[980001:1000000]
@@ -717,7 +717,7 @@ Notice that the RMSD of this solution, $28.8272$, is less than the RMSD of the A
 Let us now briefly examine the evolution of the system pseudo temperature and acceptance ratio compliance in response to the adaptive thermoregulation. The following two graphs represent data from the last 20 000 steps of optimisation replica running on CPU 8 (fixed 34% target acceptance ratio).
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-load("../inst/extdata/poly_12_RE8_model_ALL.Rdata")
+load("../data/poly_12_RE8_model_ALL.Rdata")
 
 repl                  <- 8
 T.DE.FACTO            <- OUTPUT$T.DE.FACTO[980001:1000000]
@@ -1003,7 +1003,7 @@ Notice that the solution selected by ROptimus results in an RMSD of $28.693$ whi
 Let us now take a look at how the adaptive thermoregulation performed given this highly non-smooth objective. The graphs below should now feel very familiar, they represent data taken from the last 20 000 iterations of the optimisation protocol executed by CPU 1.
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-load("../inst/extdata/term_4_SA1_model_ALL.Rdata")
+load("../data/term_4_SA1_model_ALL.Rdata")
 
 T.DE.FACTO            <- OUTPUT$T.DE.FACTO[180001:200000]
 STEP.STORED           <- OUTPUT$STEP.STORED[180001:200000]
@@ -1083,7 +1083,7 @@ $$
 Although the RMSD of $y_4$, $28.6664$, is lower than the RMSD of $y_5$, $28.6932$, $y_5$ has a lower value for $AIC$ because it contains one less term than $y_4$. Since $AIC$ was specified as the objective metric, ROptimus (perhaps counterintuitively) selected $y_5$ as the more optimal solution to reduce overfitting.
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-load("../inst/extdata/term_12_RE5_model_ALL.Rdata")
+load("../data/term_12_RE5_model_ALL.Rdata")
 
 repl                  <- 5
 T.DE.FACTO            <- OUTPUT$T.DE.FACTO[180001:200000]
@@ -1150,7 +1150,7 @@ This is the molecular structure of Vitamin C, with the numbering of non-hydrogen
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center'}
 library(knitr)
-include_graphics("../inst/extdata/VitaminC_structure_NoAngle.png")
+include_graphics("../data/VitaminC_structure_NoAngle.png")
 ```
 
 The major geometric features that drive the overall state of the molecule are the two C-C bonds in this structure: the bond joining carbon 3 and 6, and the bond joining carbon 6 and 10. The ground state conformation of Vitamin C will likely be a conformation such that steric clashes are minimised while also allowing for close proximity and right orientation between hydrogen bond donor and acceptor atoms. In the following sections, we formalise this optimisation problem and use ROptimus to arrive at the solution.
@@ -1161,8 +1161,8 @@ As in the previous tutorials, we must first rigorously define the parameters tha
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center'}
 library(knitr)
-include_graphics("../inst/extdata/conf1.png")
-include_graphics("../inst/extdata/Newman_180_180.png")
+include_graphics("../data/conf1.png")
+include_graphics("../data/Newman_180_180.png")
 ```
 In the 3D structure, grey denotes carbon, red denotes oxygen and white denotes hydrogen atoms.
 
@@ -1329,8 +1329,8 @@ CPUs 1, 3 and 4 all arrived at a conformation defined by $\{\phi = 50, \psi = -1
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center'}
 library(knitr)
-include_graphics("../inst/extdata/conf2.png")
-include_graphics("../inst/extdata/Newman_50_188.png")
+include_graphics("../data/conf2.png")
+include_graphics("../data/Newman_50_188.png")
 ```
 
 This conformation is equivalent to benchmark Conformation 2. Thus, in this example, Acceptance Ratio Simulated Annealing was able to find the Vitamin C conformation with the second lowest energy in the parameter space. This performance is strong, especially given that the limited steps and cycles executed, and that the energy difference between Conformation 1 and Conformation 2 is only $-0.329$ kcal/mol.
@@ -1338,7 +1338,7 @@ This conformation is equivalent to benchmark Conformation 2. Thus, in this examp
 The graphs below illustrate the system psuedo temperature and observed acceptance ratio for the last 20 000 optimisation iterations executed by CPU 3.
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-load("../inst/extdata/vitamin_4_SA3_model_ALL.Rdata")
+load("../data/vitamin_4_SA3_model_ALL.Rdata")
 
 T.DE.FACTO            <- OUTPUT$T.DE.FACTO[80001:100000]
 STEP.STORED           <- OUTPUT$STEP.STORED[80001:100000]
@@ -1403,8 +1403,8 @@ Of the 12 replicas, CPU 4 recovered the conformation with the lowest energy ($-2
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center'}
 library(knitr)
-include_graphics("../inst/extdata/conf3.png")
-include_graphics("../inst/extdata/Newman_90_76.png")
+include_graphics("../data/conf3.png")
+include_graphics("../data/Newman_90_76.png")
 ```
 
 This solution corresponds to reference Conformation 1, the global minimum energy state for Vitamin C. Thus, for this optimisation problem, under the limits of the set number of steps and cycles, the Replica Exchange version of ROptimus outperformed Acceptance Ratio Annealing by succeeding in finding the global minimum of the energy landscape.
@@ -1414,7 +1414,7 @@ If we compare the solution found by CPU 4 to benchmark Conformation 1, it is evi
 The below graphs illustrate the system pseudo temperature and observed acceptance ratio for the first 20 000 optimisation iterations executed by CPU 4 (66% acceptance ratio replica).
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
-load("../inst/extdata/vitamin_12_RE4_model_ALL.Rdata")
+load("../data/vitamin_12_RE4_model_ALL.Rdata")
 
 repl                  <- 4
 T.DE.FACTO            <- OUTPUT$T.DE.FACTO[1:20000]
@@ -1465,14 +1465,14 @@ This Tutorial will demonstrate the use of ROptimus to address a problem from yet
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center'}
 library(knitr)
-include_graphics("../inst/extdata/Network.png")
+include_graphics("../data/Network.png")
 ```
 
 Under normal circumstances, the transmembrane protein Sln1, which is present as a dimer, autophosphorylates at a histidine residue (consuming ATP). The phosphate group is then transferred to an aspartate residue of Sln1. Thereafter, the phosphate is transferred to the protein Ypd1 and finally to the protein Ssk1. Ssk1 is continuously dephosphortylated to give an output signal. The signalling pathway is inhibited by an increase is osmolarity outside of the cell [@SystemsBio]. If we let $A$ represent Sln1, $B$ represent Ypd1, $C$ represent Ssk1 and $XP$ represent the phophorylated form of protein $X$, then the above network can be represented by the below schematic [@SystemsBio]:
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center'}
 library(knitr)
-include_graphics("../inst/extdata/NetworkAbstracted.png")
+include_graphics("../data/NetworkAbstracted.png")
 ```
 
 where each $k_i$ represents the rate constant for the relevant phosphorylation/dephosphorylation reaction.
@@ -1846,14 +1846,14 @@ Here, we take a set of 734 pairs of $i$ and $j$ 40-kilobase DNA regions that are
 
 ```{r, tidy=TRUE, echo=FALSE, eval=TRUE}
 library(knitr)
-IJ_ORIG <- read.table(file="../inst/extdata/IJ_ORIG.tab", header=TRUE, sep="\t", stringsAsFactors=FALSE)
+IJ_ORIG <- read.table(file="../data/IJ_ORIG.tab", header=TRUE, sep="\t", stringsAsFactors=FALSE)
 head(IJ_ORIG)
 ```
 where $i \in Z^{+}$ and $j \in Z^{+}$.
 
 ```{r, tidy = TRUE, eval = TRUE, echo = FALSE, fig.align='center', out.width='400pt'}
 library(knitr)
-include_graphics("../inst/extdata/shuffling.pdf")
+include_graphics("../data/shuffling.pdf")
 ```
 
 Take note that our set of contacts comply with the following criteria.
