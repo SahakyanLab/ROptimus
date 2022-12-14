@@ -5,8 +5,7 @@
 #                                                                              #
 ################################################################################
 
-#' Acceptance Ratio Simulated Annealing and Acceptance Ratio
-#' Replica Exchange Monte Carlo Optimisation Engine.
+#' @title Acceptance Ratio Simulated Annealing and Acceptance Ratio Replica Exchange Monte Carlo Optimisation Engine
 #'
 #' @param NUMITER       Number of model optimisation steps.
 #' @param STATWINDOW    Number of last ongoing iterations to calculate
@@ -62,9 +61,24 @@
 #' @param OPT.TYPE      String specifying which optimisation protocol to use.
 #'                      Enter "SA" for Simulated Annealing or "RE" for Replica
 #'                      Exchange (default value is "SA")
+#' @param DIR           String specifying which optimisation protocol to use.
+#'                      (default value is "." i.e. current directory)
+#' @param starcore      Experimental variable of type list, holding some
+#'                      parameters for in-lab starcore use only.
 #' @return A probabilistic optimal parameter configuration K.
 #'
 #' @export
+#'
+#' @examples
+#'
+#' K <- IJ_ORIG
+#' K$j <- sample(x=K$j, size=nrow(K), replace=FALSE)
+#' out.dir <- tempdir()
+#'
+#' Optimus(NCPU=1, OPTNAME="IJ.NEW.OPTI.SA", NUMITER=500, CYCLES=2, DIR=out.dir,
+#'         DUMP.FREQ=10, LONG=FALSE, OPT.TYPE="SA", K.INITIAL=K,
+#'         rDEF=ex.r.fun, mDEF=ex.m.fun, uDEF=ex.u.fun,
+#'         DATA=list(IJ_ORIG=IJ_ORIG, gaplimit=50, numContacts=nrow(IJ_ORIG)))
 
 Optimus <- function(NUMITER       = 1000000,
                     STATWINDOW    = 70,
