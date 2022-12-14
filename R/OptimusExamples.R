@@ -1,23 +1,53 @@
-#' @export
+################################################################################
+#                                                                              #
+#                Generate script for reproducing a tutorial                    #
+#                                                                              #
+################################################################################
 
-OptimusExamples <- function(dir, example=1, method="SA",
-                            file_name="example.R",
-                            mopac="~/Downloads/MOPAC2016_for_Macintosh/MOPAC2016.exe",
-                            run=FALSE, vignette=TRUE){
-  
+#' @title Generate script for reproducing a tutorial
+#'
+#' @param dir           String specifying directory where to save the script
+#'                      and vignette.
+#' @param example       Integer specifying tutorial or example number based on
+#'                      manual (default value is 1).
+#' @param method        String specifying which optimisation protocol to use.
+#'                      Enter "SA" for Simulated Annealing or "RE" for Replica
+#'                      Exchange (default value is "SA").
+#' @param file_name     String specifying file name of script (default value is
+#'                      example.R).
+#' @param mopac         String specifying the path of the MOPAC (Molecular Orbital
+#'                      PACkage) executable for tutorial 3 (Geometry Optimisation
+#'                      of Vitamin C Molecule) (default value is NULL).
+#' @param run           If TRUE, automatically run script after generating
+#'                      (default value is FALSE).
+#' @param vignette      If TRUE, add tutorial vignette to directory (default
+#'                      value is TRUE).
+
+#' @return A script (and optionally a vignette) for reproducing a tutorial.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' out.dir <- tempdir()
+#' OptimusExamples(dir=out.dir, example=1)
+
+OptimusExamples <- function(dir, example=1, method="SA", file_name="example.R",
+                            mopac=NULL, run=FALSE, vignette=TRUE){
+
   if(vignette){
-    file.copy(from=paste0(find.package("Optimus"), "/data/Tutorial", example, ".pdf"), 
+    file.copy(from=paste0(find.package("ROptimus"), "/inst/extdata/Tutorial", example, ".pdf"),
               to=paste0(dir, "/Tutorial", example, ".pdf"))
   }
-  
-  setwd(dir)
+
+  #setwd(dir)
   #dir.create(paste0('example_',example))
   #setwd(paste0(dir,'/example_',example))
   #getwd()
-  
+
   if(example==1){
     text <-
-'library(Optimus)
+'library(ROptimus)
 set.seed(845)
 x <- runif(1000, min=-15, max=10)
 y <- -1.0*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x), mean=0, sd=30)
@@ -83,7 +113,7 @@ r <- function(K){
 
   } else if(example==2){
     text <-
-'library(Optimus)
+'library(ROptimus)
 set.seed(845)
 x <- runif(1000, min=-15, max=10)
 y <- -1*x - 0.3*x^2 + 0.2*x^3 + 0.01*x^4 + rnorm(length(x), mean=0, sd=30)
@@ -217,8 +247,13 @@ r <- function(K){
 
 
   } else if (example==3) {
+
+    if( is.null(mopac) ){
+      stop("OptimusExamples: Specify mopac argument (MOPAC executable path) for tutorial or example 3.")
+    }
+
     text <- paste0(
-'library(Optimus)
+'library(ROptimus)
 set.seed(845)
 ################################################################################
 K <- c(PHI=90, PSI=90)
@@ -337,7 +372,7 @@ r <- function(K){
 
   } else if (example==4) {
     text <-
-'library(Optimus)
+'library(ROptimus)
 set.seed(845)
 state  <- c(cA=100, cB=100, cC=100, cAP=0, cBP=0, cCP=0)
 target <- c(cA=90, cB=20, cC=70, cAP=10, cBP=80, cCP=30)
@@ -422,17 +457,17 @@ r <- function(K){
 
   } else if (example==5){
     text <-
-'library(Optimus)
+'library(ROptimus)
 
 # User-defined inputs
 
-seed = 840 # Used for initial shuffling and in Optimus call
+seed = 840 # Used for initial shuffling and in Optimus() call
 gaplimit = 50  # from 2 Mb/40 kb
 ACCRATIO = c(90, 82, 74, 66, 58, 50, 42, 34, 26, 18, 10, 2)
 
-# Defining Optimus Inputs
+# Defining Optimus() Inputs
 
-data(IJ_ORIG)
+#data(IJ_ORIG)
 K <- IJ_ORIG
 set.seed(seed)
 # Shuffle all js once
@@ -487,7 +522,7 @@ r <- function(K){
         K.INITIAL=K, rDEF=r, mDEF=m, uDEF=u, DATA=DATA)'
     }
   }
-  fileConn <- file(file_name)
+  fileConn <- file(paste0(dir, "/", file_name))
   writeLines( c(text, call), fileConn )
   close(fileConn)
   if (run) {
