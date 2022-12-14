@@ -71,6 +71,8 @@
 #' @importFrom graphics lines par plot
 #' @importFrom stats rbinom runif
 
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("repl"))
+
 OptimusRE <- function(NUMITER       = 1000000,
                       STATWINDOW    = 70,
                       T.INI         = 0.00001,
