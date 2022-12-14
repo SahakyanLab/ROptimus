@@ -2,7 +2,7 @@
 % Please edit documentation in R/Optimus.R
 \name{Optimus}
 \alias{Optimus}
-\title{Acceptance Ratio Simulated Annealing and Acceptance Ratio Replica Exchange Monte Carlo Optimisation Engine.}
+\title{Acceptance Ratio Simulated Annealing and Acceptance Ratio Replica Exchange Monte Carlo Optimisation Engine}
 \usage{
 Optimus(
   NUMITER = 1e+06,
@@ -33,7 +33,7 @@ Optimus(
   ACCRATIO.IN = 90,
   ACCRATIO.FIN = 0.5,
   OPT.TYPE = "SA",
-  dir = "./",
+  DIR = "./",
   starcore = NULL
 )
 }
@@ -100,8 +100,8 @@ optimized (K) and returns an observable object O.}
 \item{uDEF}{Function that evaluates the performance of a given set
 of parameters K.}
 
-\item{EXCHANGE.FREQ}{Frequency of exchanges (NUMITER should be
-divisible by this number, for RE Optimus).}
+\item{EXCHANGE.FREQ}{Frequency of exchanges (NUMITER should be divisible by
+this number, for RE Optimus).}
 
 \item{ACCRATIO}{Vector of Acceptance Ratios for each replica (length of
 ACCRATIO must be equal to NCPU, for RE Optimus).}
@@ -109,19 +109,36 @@ ACCRATIO must be equal to NCPU, for RE Optimus).}
 \item{CYCLES}{Number of annealing cycles (NUMITER should be divisible
 by this number, for SA Optimus).}
 
-\item{ACCRATIO.IN}{Initial acceptance ratio (%) at the beginning of each
+\item{ACCRATIO.IN}{Initial acceptance ratio (\%) at the beginning of each
 constituent annealing cycles (for SA Optimus).}
 
-\item{ACCRATIO.FIN}{Final acceptance ratio (%) at the end of each
+\item{ACCRATIO.FIN}{Final acceptance ratio (\%) at the end of each
 constituent annealing cycles (for SA Optimus).}
 
 \item{OPT.TYPE}{String specifying which optimisation protocol to use.
 Enter "SA" for Simulated Annealing or "RE" for Replica
 Exchange (default value is "SA")}
+
+\item{DIR}{String specifying which optimisation protocol to use.
+(default value is "." i.e. current directory)}
+
+\item{starcore}{Experimental variable of type list, holding some
+parameters for in-lab starcore use only.}
 }
 \value{
 A probabilistic optimal parameter configuration K.
 }
 \description{
-Acceptance Ratio Simulated Annealing and Acceptance Ratio Replica Exchange Monte Carlo Optimisation Engine.
+Acceptance Ratio Simulated Annealing and Acceptance Ratio Replica Exchange Monte Carlo Optimisation Engine
+}
+\examples{
+
+K <- IJ_ORIG
+K$j <- sample(x=K$j, size=nrow(K), replace=FALSE)
+out.dir <- tempdir()
+
+Optimus(NCPU=1, OPTNAME="IJ.NEW.OPTI.SA", NUMITER=500, CYCLES=2, DIR=out.dir,
+        DUMP.FREQ=10, LONG=FALSE, OPT.TYPE="SA", K.INITIAL=K,
+        rDEF=ex.r.fun, mDEF=ex.m.fun, uDEF=ex.u.fun,
+        DATA=list(IJ_ORIG=IJ_ORIG, gaplimit=50, numContacts=nrow(IJ_ORIG)))
 }
