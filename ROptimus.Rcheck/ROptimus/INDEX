@@ -1,0 +1,8 @@
+IJ_ORIG                 Tutorial 5 Genomic Contact Data
+Optimus                 Acceptance Ratio Simulated Annealing and
+                        Acceptance Ratio Replica Exchange Monte Carlo
+                        Optimisation Engine
+OptimusExamples         Generate script for reproducing a tutorial
+ex.m.fun                Tutorial 5 m() function
+ex.r.fun                Tutorial 5 r() function
+ex.u.fun                Tutorial 5 u() function
