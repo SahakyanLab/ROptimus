@@ -58,7 +58,7 @@
 #-- uDEF                     # Function that evaluates the performance of a
 #                              given set of parameters K.
 #-- rDEF                     # Function that defines a rule by which the
-#                              paramters(K) are randomly altered.
+#                              parameters(K) are randomly altered.
 #-- DATA = NULL              # A list that holds any supplementary data that
 #                              functions mDEF or uDEF need to access.
 #*******************************************************************************
@@ -94,13 +94,17 @@ OptimusRE <- function(NUMITER       = 1000000,
                       ACCRATIO      = c(90, 50, 5, 1),
                       DATA          = NULL,
                       K.INITIAL     = 0,
-                      DIR           = './',
+                      DIR,
                       rDEF,
                       mDEF,
                       uDEF
 ){
   ################################################################################
 
+  # Reset graphical parameters to original values after function exit
+  orig.par <- par(no.readonly=TRUE) 
+  on.exit(par(orig.par))
+  
   #-- Check that at least 2 processors are available
   if(!(NCPU > 1))
     stop("Replica Exchange requires at least 2 processors, ideally 8 or more.")
@@ -115,7 +119,7 @@ OptimusRE <- function(NUMITER       = 1000000,
   suppressWarnings(requireNamespace("doParallel"))
   registerDoParallel(cores = NCPU)
   `%op%` <- `%dopar%`
-  print(paste0("Running ", NCPU, " replicas."), quote=FALSE)
+  message(paste0("Running ", NCPU, " replicas."))
 
   seeds <- floor(runif(n=NCPU, min=1, max=1000))
 
@@ -185,7 +189,7 @@ OptimusRE <- function(NUMITER       = 1000000,
   u <- uDEF
   #^^ INITIALISATION # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-  print("Replica Exchange Monte Carlo optimisation", quote=FALSE)
+  message("Replica Exchange Monte Carlo optimisation")
 
 
 
@@ -507,7 +511,7 @@ OptimusRE <- function(NUMITER       = 1000000,
     instanceOFswitch.cache[index2]   <- 0
     #####
   } ##-- for(EXCHANGE in 1:EXCHANGE.FREQ)
-  print("An optimal model is obtained and the data are saved !!!", quote=FALSE)
+  message("An optimal model is obtained and the data are saved !!!")
   if(NCPU==1){ return(OUTPUT) } else { return(0) }
 
 }
