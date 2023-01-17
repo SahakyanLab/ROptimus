@@ -33,7 +33,7 @@ Optimus(
   ACCRATIO.IN = 90,
   ACCRATIO.FIN = 0.5,
   OPT.TYPE = "SA",
-  DIR = "./",
+  DIR,
   starcore = NULL
 )
 }
@@ -92,7 +92,7 @@ functions mDEF or uDEF need to access.}
 optimisation process will begin.}
 
 \item{rDEF}{Function that defines a rule by which the
-paramters(K) are randomly altered.}
+parameters(K) are randomly altered.}
 
 \item{mDEF}{Model function that operates on the parameters to be
 optimized (K) and returns an observable object O.}
@@ -119,8 +119,7 @@ constituent annealing cycles (for SA Optimus).}
 Enter "SA" for Simulated Annealing or "RE" for Replica
 Exchange (default value is "SA")}
 
-\item{DIR}{String specifying which optimisation protocol to use.
-(default value is "." i.e. current directory)}
+\item{DIR}{String specifying which optimisation protocol to use.}
 
 \item{starcore}{Experimental variable of type list, holding some
 parameters for in-lab starcore use only.}

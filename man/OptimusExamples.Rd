@@ -10,7 +10,6 @@ OptimusExamples(
   method = "SA",
   file_name = "example.R",
   mopac = NULL,
-  run = FALSE,
   vignette = TRUE
 )
 }
@@ -31,9 +30,6 @@ example.R).}
 \item{mopac}{String specifying the path of the MOPAC (Molecular Orbital
 PACkage) executable for tutorial 3 (Geometry Optimisation
 of Vitamin C Molecule) (default value is NULL).}
-
-\item{run}{If TRUE, automatically run script after generating
-(default value is FALSE).}
 
 \item{vignette}{If TRUE, add tutorial vignette to directory (default
 value is TRUE).}
