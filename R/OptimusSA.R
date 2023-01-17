@@ -60,7 +60,7 @@
 #-- uDEF                     # Function that evaluates the performance of a
 #                              given set of parameters K.
 #-- rDEF                     # Function that defines a rule by which the
-#                              paramters(K) are randomly altered.
+#                              parameters(K) are randomly altered.
 #-- DATA = NULL              # A list that holds any supplementary data that
 #                              functions mDEF or uDEF need to access.
 #*******************************************************************************
@@ -95,13 +95,17 @@ OptimusSA <- function(NUMITER       = 1000000,
                       ACCRATIO.FIN  = 0.5,
                       DATA          = NULL,
                       K.INITIAL     = 0,
-                      DIR           = './',
+                      DIR,
                       rDEF,
                       mDEF,
                       uDEF,
                       starcore      = NULL
 ){
   ################################################################################
+  
+  # Reset graphical parameters to original values after function exit
+  orig.par <- par(no.readonly=TRUE) 
+  on.exit(par(orig.par))
 
   set.seed(SEED)
 
@@ -112,7 +116,7 @@ OptimusSA <- function(NUMITER       = 1000000,
     suppressWarnings(requireNamespace("doParallel"))
     registerDoParallel(cores = NCPU)
     `%op%` <- `%dopar%`
-    print(paste0("Running ", NCPU, " replicas of optimisation."), quote=FALSE)
+    message(paste0("Running ", NCPU, " replicas of optimisation."))
   } else {
     `%op%` <- `%do%`
   }
@@ -172,7 +176,7 @@ OptimusSA <- function(NUMITER       = 1000000,
   u <- uDEF
   #^^ INITIALISATION # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-  print("Monte Carlo optimisation with acceptance annealing...", quote=FALSE)
+  message("Monte Carlo optimisation with acceptance annealing...")
 
 
   #-- PARALLEL PROCESSING WRAP # # # # # # # # #
@@ -197,7 +201,7 @@ OptimusSA <- function(NUMITER       = 1000000,
     for(STEP in 1:NUMITER){  #-- step of the trial, from 1 to NUMITER
 
       if(STEP%%1000==0){
-        print(paste0("Step ",STEP," out of ",NUMITER), quote=FALSE)
+        message(paste0("Step ",STEP," out of ",NUMITER))
       }
 
       K.new <- r(K=K)
@@ -401,7 +405,7 @@ OptimusSA <- function(NUMITER       = 1000000,
   })
   #^^ PARALLEL PROCESSING WRAP # # # # # # # # #
 
-  print("An optimal model is obtained and the data are saved !!!", quote=FALSE)
+  message("An optimal model is obtained and the data are saved !!!")
   if(NCPU==1){ return(OUTPUT) } else { return(0) }
 
 }
