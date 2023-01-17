@@ -1,0 +1,31 @@
+Package: ROptimus
+Title: A Parallel General-Purpose Adaptive Optimisation Engine
+Version: 3.0.0
+Authors@R: c(
+    person("Nicholas Andre G.", "Johnson", email = "nagj@mit.edu", role = "aut"),
+    person("Liezel", "Tamon", email = "lizheltamon@gmail.com", role = "aut"),
+    person("Xin", "Liu", email = "xin.liu.bio@gmail.com", role = "aut"),
+	person("Aleksandr B.", "Sahakyan", email = "sahakyanlab@cantab.net", role = c("aut", "cre")))
+Description: A general-purpose optimisation engine that supports 
+	i) Monte Carlo optimisation with Metropolis criterion [Metropolis et al. (1953) <doi:10.1063/1.1699114>, Hastings (1970) <doi:10.1093/biomet/57.1.97>]
+    and Acceptance Ratio Simulated Annealing [Kirkpatrick et al. (1983) <doi:10.1126/science.220.4598.671>, Černý (1985) <doi:10.1007/BF00940812>] 
+	on multiple cores, and ii) Acceptance Ratio Replica Exchange Monte 
+	Carlo Optimisation. In each case, the system pseudo-temperature is 
+	dynamically adjusted such that the observed acceptance ratio is kept 
+	near to the desired (fixed or changing) acceptance ratio.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: doParallel (>= 1.0.11), foreach (>= 1.4.4), iterators (>=
+        1.0.9), parallel (>= 3.4.2)
+Depends: R (>= 3.1.0)
+LazyData: true
+URL: https://github.com/SahakyanLab/ROptimus
+NeedsCompilation: no
+Packaged: 2022-12-30 17:17:25 UTC; ltamon
+Author: Nicholas Andre G. Johnson [aut],
+  Liezel Tamon [aut],
+  Xin Liu [aut],
+  Aleksandr B. Sahakyan [aut, cre]
+Maintainer: Aleksandr B. Sahakyan <sahakyanlab@cantab.net>
