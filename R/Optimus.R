@@ -43,7 +43,7 @@
 #' @param K.INITIAL     The initial parameter configuration from which the
 #'                      optimisation process will begin.
 #' @param rDEF          Function that defines a rule by which the
-#'                      paramters(K) are randomly altered.
+#'                      parameters(K) are randomly altered.
 #' @param mDEF          Model function that operates on the parameters to be
 #'                      optimized (K) and returns an observable object O.
 #' @param uDEF          Function that evaluates the performance of a given set
@@ -62,7 +62,6 @@
 #'                      Enter "SA" for Simulated Annealing or "RE" for Replica
 #'                      Exchange (default value is "SA")
 #' @param DIR           String specifying which optimisation protocol to use.
-#'                      (default value is "." i.e. current directory)
 #' @param starcore      Experimental variable of type list, holding some
 #'                      parameters for in-lab starcore use only.
 #' @return A probabilistic optimal parameter configuration K.
@@ -108,7 +107,7 @@ Optimus <- function(NUMITER       = 1000000,
                     ACCRATIO.IN   = 90,
                     ACCRATIO.FIN  = 0.5,
                     OPT.TYPE      = "SA",
-                    DIR           = './',
+                    DIR,
                     starcore      = NULL
                     ){
   #-- Call Acceptance Ratio Simulated Annealing mode of Optimus
@@ -172,6 +171,6 @@ Optimus <- function(NUMITER       = 1000000,
                 )
     else
       #-- If OPT.TYPE is neither "SA" nor "RE"
-      print(paste0(OPT.TYPE," is not a recognized optimisation protocol."), quote=FALSE)
+      stop(paste0(OPT.TYPE," is not a recognized optimisation protocol."), quote=FALSE)
   }
 }
