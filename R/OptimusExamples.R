@@ -18,8 +18,6 @@
 #' @param mopac         String specifying the path of the MOPAC (Molecular Orbital
 #'                      PACkage) executable for tutorial 3 (Geometry Optimisation
 #'                      of Vitamin C Molecule) (default value is NULL).
-#' @param run           If TRUE, automatically run script after generating
-#'                      (default value is FALSE).
 #' @param vignette      If TRUE, add tutorial vignette to directory (default
 #'                      value is TRUE).
 
@@ -33,7 +31,7 @@
 #' OptimusExamples(dir=out.dir, example=1)
 
 OptimusExamples <- function(dir, example=1, method="SA", file_name="example.R",
-                            mopac=NULL, run=FALSE, vignette=TRUE){
+                            mopac=NULL, vignette=TRUE){
 
   if(vignette){
     file.copy(from=paste0(find.package("ROptimus"), "/inst/extdata/Tutorial", example, ".pdf"),
@@ -525,7 +523,5 @@ r <- function(K){
   fileConn <- file(paste0(dir, "/", file_name))
   writeLines( c(text, call), fileConn )
   close(fileConn)
-  if (run) {
-    source(file_name)
-  }
+
 }
