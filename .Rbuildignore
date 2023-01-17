@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^documentation$
 ^random$
+^data-raw$
+^LICENSE\.md$
+^cran-comments\.md$
